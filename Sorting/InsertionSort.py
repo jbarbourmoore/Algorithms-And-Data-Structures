@@ -5,6 +5,20 @@ import HelperClasses.GenerateArrays as genArrays
 def insertionSort(array):
     '''
     Sorts an array using the insertion sort method
+
+    Parameters : 
+        array : [int]
+            The array to be sorted
+
+    Returns :
+        array_length : int
+            The length of the array being sorted
+        number_shifts : int
+            How many times numbers were swapped in order to sort the array
+        total_iterations : int 
+            How many times the algorithm went through one of the loops
+        maximum_iterations : int
+            How many times the algorithm could have gone through one of the loops
     '''
     
     array_length = len(array)
@@ -61,6 +75,18 @@ def insertionSort(array):
 def output_results(unsorted_random_array, sorted_random_array, number_shifts, total_iterations, maximum_iterations):
     '''
     Outputs the results of the sorting algorithm to the console
+
+    Parameters :
+        unsorted_random_array : [int]
+            The array before it was sorted
+        sorted_random_array : [int]
+            The array after it was sorted
+        number_shifts : int
+            How many times numbers were swapped in order to sort the array
+        total_iterations : int 
+            How many times the algorithm went through one of the loops
+        maximum_iterations : int
+            How many times the algorithm could have gone through one of the loops
     '''
     print(f"Unsorted array : {unsorted_random_array}")
     print(f"Sorted array   : {sorted_random_array}")
@@ -70,36 +96,49 @@ def output_results(unsorted_random_array, sorted_random_array, number_shifts, to
 
     print("\n---------------------\n")
 
-array_length = 100
-number_to_sort = 10000
+def test_insertion_sort(array_length = 20, number_to_sort = 10):
+    '''
+    This function runs the insertion sort for number_to_sort random arrays of array_length
 
-iteration_counts = []
+    It also runs a pre sorted array of the same length and a reverse sorted array of the same length at the end
 
-# sorts 5 random arrays with array_length elements
-for i in range(0,number_to_sort):
-    unsorted_random_array = genArrays.generate_random_array(array_length,0,array_length*2)
-    sorted_random_array = unsorted_random_array.copy()
-    array_length, number_shifts, total_iterations, maximum_iterations = insertionSort(sorted_random_array)
+    Parameters :
+        array_length : int, optional
+            The length of the random arrays to be tested
+        number_to_sort : int, optional
+            The quantity of the random arrays to be tested
+    '''
+    iteration_counts = []
 
-    iteration_counts.append(total_iterations)
+# sorts number_to_sort random arrays with array_length elements
+    for i in range(0,number_to_sort):
+        unsorted_random_array = genArrays.generate_random_array(array_length,0,array_length*2)
+        sorted_random_array = unsorted_random_array.copy()
+        array_length, number_shifts, total_iterations, maximum_iterations = insertionSort(sorted_random_array)
 
-    output_results(unsorted_random_array, sorted_random_array, number_shifts, total_iterations,maximum_iterations)
+        iteration_counts.append(total_iterations)
 
-print(f"Maximum possible iterations  : {maximum_iterations}")
-print(f"Maximum observed iterations  : {max(iteration_counts)}")
-print(f"Average observed iterations  : {mean(iteration_counts)}")
+        output_results(unsorted_random_array, sorted_random_array, number_shifts, total_iterations,maximum_iterations)
 
-print("\nSorting a presorted array")
-asc_sorted = []
-desc_sorted = []
-for i in range(0,array_length):
-    asc_sorted.append(i)
-    desc_sorted.append(array_length-i-1)
-array_length, number_shifts, total_iterations, maximum_iterations = insertionSort(asc_sorted)
-output_results(asc_sorted, asc_sorted, number_shifts, total_iterations,maximum_iterations)
-print("\nSorting a reverse sorted array")
-desc_sorted_asc = desc_sorted.copy()
-array_length, number_shifts, total_iterations, maximum_iterations = insertionSort(desc_sorted_asc)
-output_results(desc_sorted, desc_sorted_asc, number_shifts, total_iterations,maximum_iterations)
+    print("\nSorting a presorted array")
+    asc_sorted = []
+    desc_sorted = []
+    for i in range(0,array_length):
+        asc_sorted.append(i)
+        desc_sorted.append(array_length-i-1)
+    array_length, number_shifts, total_iterations, maximum_iterations = insertionSort(asc_sorted)
+    output_results(asc_sorted, asc_sorted, number_shifts, total_iterations,maximum_iterations)
+    print("Sorting a reverse sorted array")
+    desc_sorted_asc = desc_sorted.copy()
+    array_length, number_shifts, total_iterations, maximum_iterations = insertionSort(desc_sorted_asc)
+    output_results(desc_sorted, desc_sorted_asc, number_shifts, total_iterations,maximum_iterations)
+    
+    print(f"Maximum possible iterations  : {maximum_iterations}")
+    print(f"Maximum observed iterations  : {max(iteration_counts)}")
+    print(f"Average observed iterations  : {mean(iteration_counts)}")
+
+array_length = 20
+number_to_sort = 100000
+test_insertion_sort(array_length, number_to_sort)
 
 
