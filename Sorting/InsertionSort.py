@@ -134,6 +134,7 @@ def test_insertion_sort(array_length = 20, number_to_sort = 10):
     array_length, number_shifts, total_iterations, maximum_iterations = insertionSort(desc_sorted_asc)
     output_results(desc_sorted, desc_sorted_asc, number_shifts, total_iterations,maximum_iterations)
     
+    print(f"Minimum possible iterations  : {minimum_iterations} (potentially array_length - 1 -> {array_length - 1}")
     print(f"Minimum observed iterations  : {min(iteration_counts)}")
     print(f"Maximum possible iterations  : {maximum_iterations} (potentially array_length * (array_length - 1) / 2 -> {array_length * (array_length - 1) / 2:.0f})")
     print(f"Maximum observed iterations  : {max(iteration_counts)}")
