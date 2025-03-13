@@ -128,17 +128,19 @@ def test_insertion_sort(array_length = 20, number_to_sort = 10):
         desc_sorted.append(array_length-i-1)
     array_length, number_shifts, total_iterations, maximum_iterations = insertionSort(asc_sorted)
     output_results(asc_sorted, asc_sorted, number_shifts, total_iterations,maximum_iterations)
+    minimum_iterations = total_iterations
     print("Sorting a reverse sorted array")
     desc_sorted_asc = desc_sorted.copy()
     array_length, number_shifts, total_iterations, maximum_iterations = insertionSort(desc_sorted_asc)
     output_results(desc_sorted, desc_sorted_asc, number_shifts, total_iterations,maximum_iterations)
     
-    print(f"Maximum possible iterations  : {maximum_iterations}")
+    print(f"Minimum observed iterations  : {min(iteration_counts)}")
+    print(f"Maximum possible iterations  : {maximum_iterations} (potentially array_length * (array_length - 1) / 2 -> {array_length * (array_length - 1) / 2:.0f})")
     print(f"Maximum observed iterations  : {max(iteration_counts)}")
     print(f"Average observed iterations  : {mean(iteration_counts)}")
 
 array_length = 20
-number_to_sort = 100000
+number_to_sort = 1000
 test_insertion_sort(array_length, number_to_sort)
 
 
