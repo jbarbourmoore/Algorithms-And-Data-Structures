@@ -100,7 +100,10 @@ if __name__ == '__main__':
 
     for _ in range(0,number_to_search):
         random_array = genArrays.generate_random_array(array_size,0,array_size*2)
+
+        # guarantees the item is in the arrau with an unknown index when the search is ran as the array is not yet sorted
         item_searched = random_array[0]
+        
         random_array.sort()
         
         item_found_index = recursiveBinarySearch(random_array,item_searched)

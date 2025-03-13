@@ -1,4 +1,3 @@
-# import HelperClasses.GenerateArrays as genArrays
 from statistics import mean
 import HelperClasses.GenerateArrays as genArrays
 
