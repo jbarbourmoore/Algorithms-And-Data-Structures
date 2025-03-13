@@ -140,8 +140,7 @@ def test_insertion_sort(array_length = 20, number_to_sort = 10):
     print(f"Maximum observed iterations  : {max(iteration_counts)}")
     print(f"Average observed iterations  : {mean(iteration_counts)}")
 
-array_length = 20
-number_to_sort = 1000
-test_insertion_sort(array_length, number_to_sort)
-
-
+if __name__ == '__main__':
+    array_length = 20
+    number_to_sort = 1000
+    test_insertion_sort(array_length, number_to_sort)
