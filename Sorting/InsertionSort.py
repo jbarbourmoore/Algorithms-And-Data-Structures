@@ -40,7 +40,7 @@ def insertionSort(array):
         # the item in position i is to be inserted into the presorted section of the array
         # the presorted section of the array is those up to index i
         #
-        #  sorted            unsorted
+        #  sorted                 unsorted
         # [0,1,2,...,i-2,i-1] i [i+1,...,n]
         to_be_inserted = array[i]
         last_sorted_element = i-1
@@ -49,7 +49,7 @@ def insertionSort(array):
         # creating room for the value to be insert
         #
         #
-        #  sorted            unsorted
+        #  sorted                     unsorted
         # [0,1,2,...,i-2, BLANK,i-1] [i+1,...,n]
         # (BLANK is still technically i-1 in the array above but that isn't relevant to this process)
         while last_sorted_element >= 0 and to_be_inserted < array[last_sorted_element]:
@@ -61,7 +61,7 @@ def insertionSort(array):
         # item is then inserted in its appropriate location in the pre sorted array
         # the pre sorted array is now one item longer than it was before
         #
-        #  sorted            unsorted
+        #  sorted                unsorted
         # [0,1,2,...,i-2,i-1,i] [i+1,...,n]
         array[last_sorted_element+1] = to_be_inserted
 
@@ -110,7 +110,7 @@ def test_insertion_sort(array_length = 20, number_to_sort = 10):
     '''
     iteration_counts = []
 
-# sorts number_to_sort random arrays with array_length elements
+    # sorts number_to_sort random arrays with array_length elements
     for i in range(0,number_to_sort):
         unsorted_random_array = genArrays.generate_random_array(array_length,0,array_length*2)
         sorted_random_array = unsorted_random_array.copy()
@@ -120,6 +120,10 @@ def test_insertion_sort(array_length = 20, number_to_sort = 10):
 
         output_results(unsorted_random_array, sorted_random_array, number_shifts, total_iterations,maximum_iterations)
 
+    # Run the insertion sort algorithm on array that is pre sorted (both ascending and descending)
+    #
+    # For insertion sort the best case scenario should be the ascending presorted array
+    # For insertion sort the worst case scenario should be the descending presorted array 
     print("\nSorting a presorted array")
     asc_sorted = []
     desc_sorted = []
@@ -134,6 +138,7 @@ def test_insertion_sort(array_length = 20, number_to_sort = 10):
     array_length, number_shifts, total_iterations, maximum_iterations = insertionSort(desc_sorted_asc)
     output_results(desc_sorted, desc_sorted_asc, number_shifts, total_iterations,maximum_iterations)
     
+    # display cummulative (min / max / average) data based on the observed iteration counts for the randomly generated arrays
     print(f"Minimum possible iterations  : {minimum_iterations} (potentially array_length - 1 -> {array_length - 1}")
     print(f"Minimum observed iterations  : {min(iteration_counts)}")
     print(f"Maximum possible iterations  : {maximum_iterations} (potentially array_length * (array_length - 1) / 2 -> {array_length * (array_length - 1) / 2:.0f})")
