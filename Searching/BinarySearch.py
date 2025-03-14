@@ -296,10 +296,6 @@ if __name__ == '__main__':
     dataframe = pd.DataFrame.from_dict(dictionary)
     fig, axes = plt.subplots(nrows=2, ncols=2, sharey=False)
 
-    # print(dataframe)
-    # plt.title('Boxplot of Binary Search Counters By Implementation')
-    # plt.xlabel('Implementation')
-    # plt.ylabel('Counter Values')
     bright_palette = palette=sns.hls_palette(h=.5)[0:2]
     sns.set_theme(style="whitegrid", palette=bright_palette)
     sns.boxplot(dataframe, ax=axes[0,0], palette=bright_palette)
@@ -309,7 +305,7 @@ if __name__ == '__main__':
 
     axes[0,0].set_xlabel("Implementation")
     axes[0,0].set_ylabel("Counter Value")
+    fig.canvas.manager.set_window_title('Binary Search Counter Distributions By Algorithm Type')
 
-    # plt.title("Binary Search Implementations")
     plt.tight_layout()
     plt.show()
