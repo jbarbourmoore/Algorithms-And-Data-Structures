@@ -99,10 +99,7 @@ def output_search_results(item_searched, item_found_index, counter):
     print(f"The counter value was {counter}")
     print("------------------------------\n")
 
-if __name__ == '__main__':
-    # Searches for a known existing item in multiple arrays
-    array_length = 1000000
-    number_to_search = 100
+def test_binary_search_method(recursiveBinarySearch, output_search_results, array_length, number_to_search):
     counter_results = []
 
     for _ in range(0,number_to_search):
@@ -127,18 +124,38 @@ if __name__ == '__main__':
     item_searched = (0 + array_length-1)//2
     item_found_index, counter = recursiveBinarySearch(asc_sorted,item_searched)
     output_search_results(item_searched, item_found_index, counter)
+    center_item_counter = counter
     print("Searching for item outside array range")
     item_searched = -1
     item_found_index, counter = recursiveBinarySearch(asc_sorted,item_searched)
     output_search_results(item_searched, item_found_index, counter)
+    not_in_range_counter = counter
     print("Searching for item not in array")
     item_searched = 15
     asc_sorted.remove(item_searched)
+    asc_sorted.append(array_length)
     item_found_index, counter = recursiveBinarySearch(asc_sorted,item_searched)
     output_search_results(item_searched, item_found_index, counter)
+    not_in_array_counter = counter
 
+    print("Results")
+    print(f"Array Length              : {array_length}")
+    print(f"Number of Searches        : {number_to_search}")
 
+    print("------------------------------\n")
+
+    print(f"Middle Item Counter       : {center_item_counter}")
+    print(f"Not in range Counter      : {not_in_range_counter}")
+    print(f"Not in array Counter      : {not_in_array_counter}")
+
+    print("------------------------------\n")
 
     print(f"Maximum Observed Counter  : {max(counter_results)}")
     print(f"Minimum Observed Counter  : {min(counter_results)}")
     print(f"Average Observed Counter  : {mean(counter_results):.1f}")
+
+if __name__ == '__main__':
+    # Searches for a known existing item in multiple arrays
+    array_length = 1000000
+    number_to_search = 100
+    test_binary_search_method(recursiveBinarySearch, output_search_results, array_length, number_to_search)
