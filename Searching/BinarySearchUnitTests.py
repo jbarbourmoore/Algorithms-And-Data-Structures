@@ -18,7 +18,7 @@ class BinarySearchUnitTests(unittest.TestCase):
 
         test_array = [3,4,6,8,9,13,17,23,34]
         item_searched = 2
-        result = BinarySearch.recursiveBinarySearch(test_array, item_searched)
+        result,counter = BinarySearch.recursiveBinarySearch(test_array, item_searched)
         self.assertEqual(result, None)
 
     def test_recursive_item_bigger_than_largest(self):
@@ -28,7 +28,7 @@ class BinarySearchUnitTests(unittest.TestCase):
 
         test_array = [3,4,6,8,9,13,17,23,34]
         item_searched = 54
-        result = BinarySearch.recursiveBinarySearch(test_array, item_searched)
+        result,counter = BinarySearch.recursiveBinarySearch(test_array, item_searched)
         self.assertEqual(result, None)
 
     def test_recursive_item_in_middle(self):
@@ -38,7 +38,7 @@ class BinarySearchUnitTests(unittest.TestCase):
 
         test_array = [3,4,6,8,9,13,17,23,34]
         item_searched = 9
-        result = BinarySearch.recursiveBinarySearch(test_array, item_searched)
+        result,counter = BinarySearch.recursiveBinarySearch(test_array, item_searched)
         self.assertEqual(result, 4)
 
     def test_recursive_smallest_item(self):
@@ -48,7 +48,7 @@ class BinarySearchUnitTests(unittest.TestCase):
 
         test_array = [3,4,6,8,9,13,17,23,34]
         item_searched = 3
-        result = BinarySearch.recursiveBinarySearch(test_array, item_searched)
+        result,counter = BinarySearch.recursiveBinarySearch(test_array, item_searched)
         self.assertEqual(result, 0)
 
     def test_recursive_largest_item(self):
@@ -58,7 +58,7 @@ class BinarySearchUnitTests(unittest.TestCase):
 
         test_array = [3,4,6,8,9,13,17,23,34]
         item_searched = 34
-        result = BinarySearch.recursiveBinarySearch(test_array, item_searched)
+        result,counter = BinarySearch.recursiveBinarySearch(test_array, item_searched)
         self.assertEqual(result, 8)
 
     def test_recursive_10000_item_random_array(self):
@@ -69,7 +69,7 @@ class BinarySearchUnitTests(unittest.TestCase):
         test_array = genArrays.generate_random_array(10000,0,20000)
         item_searched = test_array[0]
         test_array.sort()
-        result = BinarySearch.recursiveBinarySearch(test_array, item_searched)
+        result,counter = BinarySearch.recursiveBinarySearch(test_array, item_searched)
         self.assertEqual(item_searched, test_array[result])
 
     def test_recursive_100_50_item_random_arrays(self):
@@ -81,7 +81,7 @@ class BinarySearchUnitTests(unittest.TestCase):
             test_array = genArrays.generate_random_array(50,0,100)
             item_searched = test_array[0]
             test_array.sort()
-            result = BinarySearch.recursiveBinarySearch(test_array, item_searched)
+            result,counter = BinarySearch.recursiveBinarySearch(test_array, item_searched)
             self.assertEqual(item_searched, test_array[result])
 
 if __name__ == '__main__':

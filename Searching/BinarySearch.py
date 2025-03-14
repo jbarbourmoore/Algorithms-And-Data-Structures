@@ -1,9 +1,10 @@
 import HelperClasses.GenerateArrays as genArrays
+from statistics import mean
 
 # Important Note :
 # Binary Search REQUIRES a SORTED list
 
-def recursiveBinarySearchHelper(array, item_searched, left_index, right_index):
+def recursiveBinarySearchHelper(array, item_searched, left_index, right_index,counter):
     '''
     This is a recursive function that seaches for an item in an array using binary search
 
@@ -30,7 +31,7 @@ def recursiveBinarySearchHelper(array, item_searched, left_index, right_index):
     # if the left and right indexes have crossed over we can say the item is not in the array
     # returns None and ends the recursion
     if (left_index > right_index):
-        return None
+        return None, counter
     
     else:
         # uses integer division to find the index of the center element of the current search area
@@ -43,7 +44,7 @@ def recursiveBinarySearchHelper(array, item_searched, left_index, right_index):
         # checks if the center point of the current search area is the item_searched
         # returns the index number and end the recursion
         if array[middle_index] == item_searched:
-            return middle_index 
+            return middle_index, counter
         
         # checks in the item_searched is larger than the item at the middle index
         # calls recursiveBinarySearchHelper on a smaller search area 
@@ -52,7 +53,7 @@ def recursiveBinarySearchHelper(array, item_searched, left_index, right_index):
         # [n-10, n-9, n-8, n-7, !n-6! n-5, n-4, n-3, n-2, n-1]
         # n-10, n-9, n-8, n-7, !n-6! [n-5, n-4, n-3, n-2, n-1]
         elif array[middle_index] < item_searched:
-            return recursiveBinarySearchHelper(array, item_searched, middle_index+1, right_index)
+            return recursiveBinarySearchHelper(array, item_searched, middle_index+1, right_index,counter+1)
         
         # if the item_searched is larger than the item at the middle index
         # calls recursiveBinarySearchHelper on a smaller search area 
@@ -61,7 +62,7 @@ def recursiveBinarySearchHelper(array, item_searched, left_index, right_index):
         # [n-10, n-9, n-8, n-7, !n-6! n-5, n-4, n-3, n-2, n-1]
         # [n-10, n-9, n-8, n-7] !n-6! n-5, n-4, n-3, n-2, n-1
         else: 
-            return recursiveBinarySearchHelper(array, item_searched, left_index, middle_index-1)
+            return recursiveBinarySearchHelper(array, item_searched, left_index, middle_index-1,counter+1)
         
 def recursiveBinarySearch(array, item_searched):
     '''
@@ -89,22 +90,55 @@ def recursiveBinarySearch(array, item_searched):
     #
     # !n-3! [n-2, n-1, n, n+1, n+2] !n+3!   
     if (item_searched < array[0] or item_searched > array[array_length-1]):
-        return None
+        return None,0
     else:
-        return recursiveBinarySearchHelper(array, item_searched, 0, array_length-1)
+        return recursiveBinarySearchHelper(array, item_searched, 0, array_length-1,1)
     
+def output_search_results(item_searched, item_found_index, counter):
+    print(f"The item, {item_searched}, was found at index {item_found_index}")
+    print(f"The counter value was {counter}")
+    print("------------------------------\n")
+
 if __name__ == '__main__':
     # Searches for a known existing item in multiple arrays
-    array_size = 1000
+    array_length = 1000000
     number_to_search = 100
+    counter_results = []
 
     for _ in range(0,number_to_search):
-        random_array = genArrays.generate_random_array(array_size,0,array_size*2)
+        random_array = genArrays.generate_random_array(array_length,0,array_length*2)
 
         # guarantees the item is in the arrau with an unknown index when the search is ran as the array is not yet sorted
         item_searched = random_array[0]
-        
+
         random_array.sort()
         
-        item_found_index = recursiveBinarySearch(random_array,item_searched)
-        print(f"The item, {item_searched}, was found at index {item_found_index}")
+        item_found_index, counter = recursiveBinarySearch(random_array,item_searched)
+
+        counter_results.append(counter)
+        output_search_results(item_searched, item_found_index, counter)
+
+    asc_sorted = []
+    for i in range(0,array_length):
+        asc_sorted.append(i)
+    asc_sorted.sort()
+
+    print("Searching for middle item")
+    item_searched = (0 + array_length-1)//2
+    item_found_index, counter = recursiveBinarySearch(asc_sorted,item_searched)
+    output_search_results(item_searched, item_found_index, counter)
+    print("Searching for item outside array range")
+    item_searched = -1
+    item_found_index, counter = recursiveBinarySearch(asc_sorted,item_searched)
+    output_search_results(item_searched, item_found_index, counter)
+    print("Searching for item not in array")
+    item_searched = 15
+    asc_sorted.remove(item_searched)
+    item_found_index, counter = recursiveBinarySearch(asc_sorted,item_searched)
+    output_search_results(item_searched, item_found_index, counter)
+
+
+
+    print(f"Maximum Observed Counter  : {max(counter_results)}")
+    print(f"Minimum Observed Counter  : {min(counter_results)}")
+    print(f"Average Observed Counter  : {mean(counter_results):.1f}")
