@@ -1,5 +1,8 @@
 from statistics import mean
 import HelperClasses.GenerateArrays as genArrays
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def insertionSort(array):
     '''
@@ -144,7 +147,24 @@ def test_insertion_sort(array_length = 20, number_to_sort = 10):
     print(f"Maximum observed iterations  : {max(iteration_counts)}")
     print(f"Average observed iterations  : {mean(iteration_counts)}")
 
+    return iteration_counts
+
 if __name__ == '__main__':
     array_length = 20
     number_to_sort = 1000
-    test_insertion_sort(array_length, number_to_sort)
+    iteration_counts = test_insertion_sort(array_length, number_to_sort)
+
+    dictionary = {
+        "Each Run": iteration_counts,
+    }
+    dataframe = pd.DataFrame.from_dict(dictionary)
+
+    bright_palette = palette=sns.hls_palette(h=.5)[0:2]
+    sns.set_theme(style="whitegrid", palette=bright_palette)
+    sns.boxplot(dataframe, palette=bright_palette)
+    plt.title("How many times did the algorithm loop?")
+    plt.xlabel(f"Sorting {number_to_sort} arrays of {array_length} values")
+    plt.ylabel(f"Iterations")
+    plt.show()
+
+
