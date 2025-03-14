@@ -42,3 +42,33 @@ def generate_random_array(array_length=10,min_value=0,max_value=30):
     for _ in range(0,array_length):
         array.append(random.randint(min_value,max_value))
     return array
+
+def generateRandomSortedSearchArrays(array_length, number_to_search):
+    '''
+    Helper function which generates a dictionary of random arrays and values to search for
+    
+    The arrays are of array_length and there are number_to_search arrays in the dictionary
+
+    Parameters :
+        array_length : int, optional
+            The length of the array (default is 10)
+        number_to_search : int
+            How many array and item tuples to generate
+
+    Returns :
+        search_dictionary : {int:([int],int)}
+            A dictionary filled with integer referenced tuples of an array to search and the item to search for
+    '''
+
+    search_dict={}
+
+    for i in range(0,number_to_search):
+        random_array = generate_random_array(array_length,0,array_length*2)
+
+        # guarantees the item is in the array with an unknown index when the search is ran as the array is not yet sorted
+        item_searched = random_array[0]
+        random_array.sort()
+
+        search_dict[i]=(random_array,item_searched)
+
+    return search_dict

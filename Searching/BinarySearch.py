@@ -1,5 +1,8 @@
 import HelperClasses.GenerateArrays as genArrays
 from statistics import mean
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Important Note :
 # Binary Search REQUIRES a SORTED list
@@ -230,12 +233,83 @@ def test_binary_search_method(binarySearchFunction, output_search_results, array
 
     return counter_results
 
+def test_binary_search_consistent_arrays(binarySearchFunction, search_dictionary, array_length, number_to_search):
+    '''
+    This function runs the selected binary search function against a pre defined selection of random arrays
+
+    Parameters :
+        binarySearchFunction : function()
+            The implementation of binary search to use
+        search_dictionary : {int : ([int],int)}
+            The dictionary containing touples with the array to search and the value to search for
+        array_length : int
+            The length of the arrays that are being searched
+        number_to_search : int 
+            The quantity of arrays being searched
+
+    Returns :
+        counter_results : [int]
+            A list containing how many iterations each search took
+    '''
+    
+    counter_results = []
+
+    for index, value in search_dictionary.items():
+        array, item_searched = value 
+        _, counter = binarySearchFunction(array,item_searched)
+        _, counter = binarySearchFunction(array,item_searched)
+
+        counter_results.append(counter)
+        # output_search_results(item_searched, item_found_index, counter)
+
+    print("Results")
+    print(f"Array Length              : {array_length}")
+    print(f"Number of Searches        : {number_to_search}")
+
+    print("------------------------------\n")
+
+    print(f"Maximum Observed Counter  : {max(counter_results)}")
+    print(f"Minimum Observed Counter  : {min(counter_results)}")
+    print(f"Average Observed Counter  : {mean(counter_results):.1f}")
+
+    return counter_results
+
 if __name__ == '__main__':
     # Searches for a known existing item in multiple arrays
     array_length = 10000
     number_to_search = 1000
+
+    # creates a dictionary of random arrays for both binary search implementations to use
+    search_dictionary = genArrays.generateRandomSortedSearchArrays(array_length, number_to_search)
+
     print("Testing recursive binary search:\n")
-    test_binary_search_method(recursiveBinarySearch, output_search_results, array_length, number_to_search)
+    recursive_binary_search_counters = test_binary_search_consistent_arrays(recursiveBinarySearch, search_dictionary, array_length, number_to_search)
     print("\n-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-\n")
     print("Testing loop based binary search:\n")
-    test_binary_search_method(loop_based_binary_search, output_search_results, array_length, number_to_search)
+    loop_binary_search_counters = test_binary_search_consistent_arrays(loop_based_binary_search, search_dictionary, array_length, number_to_search)
+
+    dictionary = {
+        "Recursive": recursive_binary_search_counters,
+        "Loop Based":loop_binary_search_counters
+    }
+
+    dataframe = pd.DataFrame.from_dict(dictionary)
+    fig, axes = plt.subplots(nrows=2, ncols=2, sharey=False)
+
+    # print(dataframe)
+    # plt.title('Boxplot of Binary Search Counters By Implementation')
+    # plt.xlabel('Implementation')
+    # plt.ylabel('Counter Values')
+    bright_palette = palette=sns.hls_palette(h=.5)[0:2]
+    sns.set_theme(style="whitegrid", palette=bright_palette)
+    sns.boxplot(dataframe, ax=axes[0,0], palette=bright_palette)
+    sns.stripplot(data=dataframe, ax=axes[0,1], palette=bright_palette)
+    sns.histplot(dataframe["Recursive"],ax=axes[1,0], color=bright_palette[0])
+    sns.histplot(dataframe["Loop Based"], ax=axes[1,1], color=bright_palette[1])
+
+    axes[0,0].set_xlabel("Implementation")
+    axes[0,0].set_ylabel("Counter Value")
+
+    # plt.title("Binary Search Implementations")
+    plt.tight_layout()
+    plt.show()
