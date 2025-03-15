@@ -173,7 +173,7 @@ class DynamicArray:
         starting_size = self.size
 
         # move every item to the right of the index one position to the left
-        for i in range(index_to_remove, starting_size):
+        for i in range(index_to_remove, starting_size-1):
             self.array[i] = self.array[i + 1]
 
         self.size = starting_size - 1
