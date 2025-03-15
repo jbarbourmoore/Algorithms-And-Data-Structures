@@ -18,6 +18,165 @@ class MinHeap:
 
         self.array = array
 
+    def swap(self, index_a, index_b):
+        '''
+        This method swaps two items in the list
+
+        Parameters :
+            array : [int]
+                The array that the items are in
+            index_a : int 
+                The index of one of the items to be swapped
+            index_b : int
+                The index of the other item to be swapped
+        '''
+
+        # assumes both index values are positive and not out of bound of the array
+        # arr(a) = arr[b] and arr(b) = arr[a]
+        (self.array[index_a], self.array[index_b]) = (self.array[index_b], self.array[index_a])
+
+    def addItem(self, item_to_add):
+        '''
+        This method adds an item to the end of the min heap and then calls bubble up to position the item appropriately
+
+        Paramters :
+            item_to_add : int
+                The item to be added to the min heap and then positioned appropriately
+        '''
+
+        self.array.append(item_to_add)
+        index_added = len(self.array) - 1
+        self.bubbleUp(index_added)
+
+    def bubbleUp(self, starting_index):
+        '''
+        This method completes the bubble up algorithm to appropriately position an item at a given index in the min heap
+
+        Parameters : 
+            starting_index : int
+                The index of the item to be positioned within the min heap
+        '''
+
+        parent_index = self.getParentIndex(starting_index)
+
+        if starting_index < 1 :
+            return
+        else :
+            if self[starting_index] < self[parent_index]:
+                self.swap(starting_index, parent_index)
+                self.bubbleUp(parent_index)
+
+        return
+
+    def addItemToFront(self, item_to_add):
+        '''
+        This method adds an item to the front of the min heap and calls bubble down in order to position it 
+
+        Parameters :
+            item_to_add : int
+                The item to be added to the front of the min heap
+        '''
+
+        self.array.insert(0,item_to_add)
+        index_added = 0
+        self.bubbleDown(index_added)
+
+    def getParentIndex(self, index):
+        '''
+        This method gets the index value that would be the parent item for a given index if it exists
+
+        Parameters :
+            index : int
+                The index of the item for which one is finding the parent index
+
+        Returns : 
+            parent_index : int
+                The index the parent have if it exists
+        '''
+
+        return index // 2
+    
+    def getChildIndexes(self, index):
+        '''
+        This method gets the index values that would be the child items for a given index if they are in the heap
+
+        Parameters :
+            index : int
+                The index of the item for which one is finding the child indexes
+
+        Returns : 
+            left_child_index : int
+                The index the left child would have if it exists
+            right_child_index : int
+                The index the right child would have if it exists
+        '''
+
+        left_child_index = 2 * (index) + 1
+        right_child_index = left_child_index + 1
+        return left_child_index, right_child_index
+
+    def bubbleDown(self, starting_index):
+        '''
+        This method completes the bubble down algorithm to apropriately position an item which is too high in the min heap
+
+        Parameters :
+            starting_index : int
+                The index of the item to be repositioned using bubble down
+        '''
+
+        heap_size = self.getHeapSize()
+
+        left_child_index, right_child_index = self.getChildIndexes(starting_index)
+
+        # the item has no children
+        if left_child_index > heap_size -1:
+            return
+        
+        # the item has 1 left child
+        elif right_child_index > heap_size - 1:
+            if self[starting_index] > self[left_child_index]:
+                self.swap(starting_index, left_child_index)
+                self.bubbleDown(left_child_index)
+
+        # the item has 2 children
+        else :
+            # if the left child is the smaller one
+            if self[left_child_index] < self[right_child_index]:
+                if self[starting_index] > self[left_child_index]:
+                    self.swap(starting_index, left_child_index)
+                    self.bubbleDown(left_child_index)
+                elif self[starting_index] > self[right_child_index]:
+                    self.swap(starting_index, right_child_index)
+                    self.bubbleDown(right_child_index)
+                
+            else:
+                if self[starting_index] > self[right_child_index]:
+                    self.swap(starting_index, right_child_index)
+                    self.bubbleDown(right_child_index)
+                elif self[starting_index] > self[left_child_index]:
+                    self.swap(starting_index, left_child_index)
+                    self.bubbleDown(left_child_index)
+
+        return
+    
+    def __getitem__(self, index):
+        '''
+        This method allows direct access to the array value at a given index
+
+        Parameters : 
+            index : int
+                The index of the array value which is being accessed
+
+        Returns :
+            array[index] : int
+                The value of the array at the given index
+        '''
+
+        # ensure the index is not outside the bounds of the array
+        assert index >= 0 and index < self.getHeapSize()
+
+        return self.array[index]
+
     def getHeapRoot(self):
         '''
         This method gets the current value of the heap root
@@ -55,6 +214,15 @@ class MinHeap:
 
         return heap_depth
     
+    def printHeap(self):
+        '''
+        This method outputs each level of the min heap on its own line
+        '''
+        previous_index = 0
+        for i in range(0,self.getHeapDepth()):
+            print(self.array[previous_index:previous_index+2**i])
+            previous_index += 2**i
+    
     def printHeapDimensions(self):
         '''
         This method outputs the current heap dimensions
@@ -70,5 +238,15 @@ if __name__ == '__main__':
         starting_array.append(i)
 
     minheap = MinHeap(starting_array)
+    minheap.printHeap()
+    minheap.printHeapDimensions()
 
+    minheap.addItem(-1)
+
+    minheap.printHeap()
+    minheap.printHeapDimensions()
+
+    minheap.addItemToFront(20)
+
+    minheap.printHeap()
     minheap.printHeapDimensions()
