@@ -15,8 +15,10 @@ class MinHeap:
             array : [int], optional
                 The array that the minheap shall be created around (default is the empty array [])
         '''
-
+        self.swap_count = 0
         self.array = array
+        self.heapify()
+        
 
     def swap(self, index_a, index_b):
         '''
@@ -30,7 +32,7 @@ class MinHeap:
             index_b : int
                 The index of the other item to be swapped
         '''
-
+        self.swap_count += 1
         # assumes both index values are positive and not out of bound of the array
         # arr(a) = arr[b] and arr(b) = arr[a]
         (self.array[index_a], self.array[index_b]) = (self.array[index_b], self.array[index_a])
@@ -159,6 +161,50 @@ class MinHeap:
 
         return
     
+    def deleteItem(self, index):
+        '''
+        This method removes an item from the array by swapping it with the last item and then deleting the last item
+
+        It then uses bubble up if the item is smaller than its parent or bubble down if the item is bigger than its child
+
+        Parameters :
+            index : int
+                The index of the item to be removed
+        '''
+
+        starting_length = len(self.array)
+
+        if starting_length > 1:
+            self.swap(index, starting_length-1)
+
+            item_deleted = self.array.pop(starting_length-1)
+
+            parent_index = self.getParentIndex(index)
+            left_child_index, right_child_index = self.getChildIndexes(index)
+
+            if self[index] < self[parent_index] :
+                self.bubbleUp(index)
+            elif left_child_index < len(self.array) and right_child_index < len(self.array):
+                if self[index] > self[left_child_index] or self[index] > self[right_child_index]:
+                    self.bubbleDown(index)
+            elif left_child_index < len(self.array):
+                if self[index] > self[left_child_index]:
+                    self.bubbleDown(index)
+
+            return item_deleted
+        elif starting_length == 1:
+            return self.array.pop(starting_length-1)
+
+    def heapify(self):
+        '''
+        This method turns the array into a min heap using bubble down
+        '''
+
+        heap_size = self.getHeapSize()
+
+        for i in range(heap_size-1, -1, -1):
+            self.bubbleDown(i)
+    
     def __getitem__(self, index):
         '''
         This method allows direct access to the array value at a given index
@@ -248,5 +294,30 @@ if __name__ == '__main__':
 
     minheap.addItemToFront(20)
 
+    minheap.printHeap()
+    minheap.printHeapDimensions()
+
+    print(minheap.deleteItem(4))
+
+    
+    minheap.printHeap()
+
+    minheap.printHeapDimensions()
+
+    minheap.deleteItem(5)
+    
+    minheap.printHeap()
+    minheap.printHeapDimensions()
+    
+    minheap.deleteItem(0)
+    
+    minheap.printHeap()
+    minheap.printHeapDimensions()
+
+    starting_array = []
+    for i in range (14,0,-1):
+        starting_array.append(i)
+
+    minheap = MinHeap(starting_array)
     minheap.printHeap()
     minheap.printHeapDimensions()
