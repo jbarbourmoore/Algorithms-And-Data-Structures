@@ -3,7 +3,7 @@ class QuickSelect():
     This class selects the kth smallest or kth largest element in an array
     '''
 
-    def __init__(self, array, k=1, smallest=True):
+    def __init__(self, array, k=1, smallest=True, debug=False):
         '''
         This method initializes the QuickSelect object with an array, a k value and whether it is searching for smallest
 
@@ -14,11 +14,14 @@ class QuickSelect():
                 The value for how many from the smallest or largest (default is 1)
             smallest : Boolean
                 Whether the select is for the kth smallest (default is True)
+            debug : Boolean
+                Whether to create extra outputs for use when debugging (defaul is false)
         '''
 
         self.array = array
         self.k = k
         self.smallest=smallest
+        self.debug = debug
 
         self.array_length = len(array)
 
@@ -37,13 +40,18 @@ class QuickSelect():
                 The value of k with respect to the current search area
         '''
 
-        if (local_k > 0 and self.k <= right_index - left_index + 1):
+        if (local_k > 0 and local_k <= right_index - left_index + 1):
 
             partition_index = self.partition(left_index, right_index)
 
-            if (partition_index - left_index == local_k - 1):
+            if self.debug:
+                print(self.array)
+                print(f"p_i ={partition_index} li={left_index} ri = {right_index} item={self.array[partition_index]} lk={local_k}")
+                print(f"{partition_index-left_index} == {local_k-1}")
+            
+            if (partition_index - left_index == local_k - 1 ):
                 return self.array[partition_index]
-            elif (partition_index - left_index > local_k - 1 and self.smallest):
+            elif (partition_index - left_index > local_k - 1):
                 return self.quickselect( left_index, partition_index - 1, local_k)
             else:
                 return self.quickselect(partition_index + 1, right_index, local_k - partition_index + left_index - 1)
