@@ -60,8 +60,13 @@ The min heap is a heap data structure where each item must be smaller than it's 
 Given an array : [48, 16, 49, 20, 51, 37, 33, 31, 44, 15, 52, 27, 42, 38, 31]
 
 This min heap could be created:  
-              15     
-       16,            27     
-  20,     48,     37,     31    
-31, 44, 51, 52, 49, 42, 38, 33    
-The heap containing 15 elements has a depth of 4 and a root of 15
+|    |    |   |   |   |    |    |   |   |    |   |    |   |   |   |   
+|  ---  |  ---  |  --- | --- | ---  |   --- |   --- |  --- |  --- |   ---- |  --- | --- | ---  | ---  |  ---- |   
+|    |    |   |   |   |    |    | 15 |   |    |   |    |   |   |   |   
+|    |    |   |16 |   |    |    |   |   |    |   | 27 |   |   |   |      
+|    | 20 |   |   |    | 48 |   |   |   | 37 |   |   |   | 31 |   |  
+| 31 |   | 44 |   | 51 |   | 52 |   | 49 |   | 42 |   | 38 |   | 33 |   
+
+
+The heap containing 15 elements has a depth of 4 and a root of 15.   
+Each item's childrean are larger than the item itself and the smallest item is always at the root.   
