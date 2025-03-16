@@ -10,6 +10,16 @@ class QuickSort():
     '''
 
     def __init__(self, array):
+        '''
+        This method initializes the quick sort object
+
+        It creates the metrics variables and calls the initial quick sort method
+
+        Parameters :
+            array : [int]
+                The array to be sorted 
+        '''
+
         self.unsorted_array = array
         self.sorted_array = array.copy()
         self.partition_counter = 0
@@ -27,7 +37,7 @@ class QuickSort():
 
     def setMaximumDepth(self, depth):
         '''
-        This method sets the maximum depth of the merge sort
+        This method sets the maximum depth of the quick sort
 
         Parameters: 
             depth : int 
@@ -37,6 +47,16 @@ class QuickSort():
             self.maximum_depth = depth
 
     def partition(self, left_index, right_index):
+        '''
+        This method partitions the array, placing values that are smaller or equal to the pivot value on the left side
+
+        Parameters :
+            left_index : int
+                The left index of the area being partitioned
+            right_index : int 
+                The right index of the area being partitioned
+        '''
+
         pivot_value = self.sorted_array[right_index]
         self.partition_counter += 1
         partition_index = left_index
@@ -55,6 +75,19 @@ class QuickSort():
         return partition_index
 
     def quickSort(self, left_index, right_index, recursive_depth):
+        '''
+        This is the recursive method which runs the quick sort
+        It works on divide and concur, calling itself on both sides of a partition value in order to sort the entire array
+
+        Parameters :
+            left_index : int
+                The left index of the area being partitioned
+            right_index : int 
+                The right index of the area being partitioned
+            recursive_depth : int
+                The current recursive depth of this array partition
+        '''
+
         recursive_depth += 1
         self.setMaximumDepth(recursive_depth)
 
