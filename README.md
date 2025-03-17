@@ -33,7 +33,9 @@ Implemented a heap sort using the min heap data structure. It run 5 times each f
 
 #### Quick Sort   
 
-Implemented a quick sort algorithm that relies on recursion. It run 5 times each for 205 different array lengths. Each run it calculates the amount of time that the sort took in seconds and the number of calls to the recursive method, the max recursive depth and the quantity loop iterations. It generates 4 plots comparing each statistic with the array length.
+Implemented a quick sort algorithm that relies on recursion. It run 5 times each for 205 different array lengths. Each run it calculates the amount of time that the sort took in seconds and the number of calls to the recursive method, the max recursive depth and the quantity of loop iterations. It generates 4 plots comparing each statistic with the array length.
+
+![plots comparing the number of elements in the arrays being sorted with the maximum array depth, the recursive calls, the quantity of loop iterations. Other than the max recursive depth which looks along the lines of logarithmic, the others appear near linear.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/c8489f2ec63e4eb019621d54eb827794f9cb0d5e/OutputImages/Recursive_Quick_Sort_By_Array_Length.png "Quick Sort")
 
 ### Searching
 
@@ -58,8 +60,13 @@ The min heap is a heap data structure where each item must be smaller than it's 
 Given an array : [48, 16, 49, 20, 51, 37, 33, 31, 44, 15, 52, 27, 42, 38, 31]
 
 This min heap could be created:  
-              15     
-       16,            27     
-  20,     48,     37,     31    
-31, 44, 51, 52, 49, 42, 38, 33    
-The heap containing 15 elements has a depth of 4 and a root of 15
+|    |    |   |   |   |    |    |   |   |    |   |    |   |   |   |   
+|  ---  |  ---  |  --- | --- | ---  |   --- |   --- |  --- |  --- |   ---- |  --- | --- | ---  | ---  |  ---- |   
+|    |    |   |   |   |    |    | 15 |   |    |   |    |   |   |   |   
+|    |    |   |16 |   |    |    |   |   |    |   | 27 |   |   |   |      
+|    | 20 |   |   |    | 48 |   |   |   | 37 |   |   |   | 31 |   |  
+| 31 |   | 44 |   | 51 |   | 52 |   | 49 |   | 42 |   | 38 |   | 33 |   
+
+
+The heap containing 15 elements has a depth of 4 and a root of 15.   
+Each item's childrean are larger than the item itself and the smallest item is always at the root.   
