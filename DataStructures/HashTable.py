@@ -60,6 +60,8 @@ class HashTable():
         if item in self.array[index]:
             self.array[index].remove(item)
             self.count_items -= 1
+        
+        self.checkCurrentLoadFactor()
 
     def increase_capacity(self):
         '''
