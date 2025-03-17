@@ -74,7 +74,7 @@ class BinarySearchTree():
     Each left child node must be smaller than the parent node and each right child node must be larger than the parent node
     '''
 
-    def __init__(self, initial_values_list: list[int], debug = False):
+    def __init__(self, initial_values_list=[], debug = False):
         '''
         This method initializes the binary search tree object
 
@@ -87,7 +87,8 @@ class BinarySearchTree():
 
         self.root = None
         self.debug = debug
-        self.insertItemList(values=initial_values_list)
+        if initial_values_list != []:
+            self.insertItemList(values=initial_values_list)
 
     def insertItemList(self, values: list[int]):
          '''
@@ -192,6 +193,34 @@ class BinarySearchTree():
         if current_node.hasRightChild():
                 self.printNodesInAscendingOrderHelper(current_node.getRightChild())
 
+    def getNodeValuesAsOrderedList(self):
+        '''
+        This method returns the current nodes of the binary search tree in a list in ascending order
+        '''
+
+        if self.root == None:
+            return []
+        else:
+            return self.getNodeValuesAsOrderedListHelper(self.root, []) 
+
+    def getNodeValuesAsOrderedListHelper(self, current_node: BinarySearchTreeNode, ordered_list=[]):
+        '''
+        This is a recursive method which helps get the node values in a list
+
+        Parameters :
+            current_node : BinarySearchTreeNode
+                The node that is currently being examined for adding to the list
+            ordered_list : [int]
+                The list of values in ascending order
+        '''
+
+        if current_node.hasLeftChild():
+                self.getNodeValuesAsOrderedListHelper(current_node.getLeftChild(),ordered_list)
+        ordered_list.append(current_node.getValue())
+        if current_node.hasRightChild():
+                self.getNodeValuesAsOrderedListHelper(current_node.getRightChild(),ordered_list)
+        return ordered_list
+
     def searchForNode(self, value_to_search):
         '''
         This method searches for a value in the binary search tree and returns that node or None if it can't be found
@@ -292,17 +321,25 @@ class BinarySearchTree():
             current_node.setRightChild(self.deleteItemHelper(current_node.getRightChild(), value_to_delete))
             return current_node
         elif current_node.getValue() == value_to_delete:
-            if not current_node.hasLeftChild():
-                return current_node.getRightChild()
-            if not current_node.hasRightChild():
-                return current_node.getLeftChild()
+            # if not current_node.hasLeftChild():
+            #     return current_node.getRightChild()
+            # if not current_node.hasRightChild():
+            #     return current_node.getLeftChild()
             
             successor_for_deletion = current_node.getSuccessorForDeletion()
             if successor_for_deletion == None:
+                 print("No successor")
+                 if current_node.getValue() == self.root.getValue() and not self.root.hasLeftChild() and not self.root.hasRightChild():
+                      self.root = None
                  current_node = None
+
+                 return current_node
             else:
+                print(successor_for_deletion.getValue())
+
                 current_node.setValue(successor_for_deletion.getValue())
                 current_node.setRightChild(self.deleteItemHelper(current_node=current_node.getRightChild(), value_to_delete=successor_for_deletion.getValue()))
+                return current_node
         else:
              print("The item was not found in the binary search tree")
              return current_node
