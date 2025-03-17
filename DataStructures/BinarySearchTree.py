@@ -37,6 +37,12 @@ class BinarySearchTreeNode():
 
     def setLeftChild(self, node):
          self.left_child = node
+    
+    def hasLeftChild(self):
+         return self.left_child != None
+    
+    def hasRightChild(self):
+         return self.right_child != None
 
 class BinarySearchTree():
     '''
@@ -113,12 +119,113 @@ class BinarySearchTree():
                     right_child_node = self.insertItemHelper(current_node=current_node.getRightChild(), value_to_insert=value_to_insert)
                     current_node.setRightChild(right_child_node)
         return current_node
+    
+    def printNodesInAscendingOrder(self):
+        '''
+        This method prints out the current nodes of the binary search tree in ascending order
+        '''
+
+        if self.root == None:
+             print("This Binary Search Tree does not hava a root node")
+        else:
+            print("The current nodes in order: ", end=" ")
+            self.printNodesInAscendingOrderHelper(self.root) 
+            print()
+
+    def printNodesInAscendingOrderHelper(self, current_node: BinarySearchTreeNode):
+        '''
+        This is a recursive method which helps print the binary search tree nodes in ascending order
+
+        Parameters :
+            current_node : BinarySearchTreeNode
+                The node that is currently being examined for printing
+        '''
+
+        if current_node.hasLeftChild():
+                self.printNodesInAscendingOrderHelper(current_node.getLeftChild())
+        print(current_node.getValue(), end=" ")
+        if current_node.hasRightChild():
+                self.printNodesInAscendingOrderHelper(current_node.getRightChild())
+
+    def searchForNode(self, value_to_search):
+        '''
+        This method searches for a value in the binary search tree and returns that node or None if it can't be found
+
+        Parameters :
+            value : int
+                The value that is being searched for in the binary search tree
+
+        Returns :
+            node_with_value : BinarySearchTreeNode or None
+                The node that contains the value being searched for or none if it doesn't exist
+        '''
+  
+        if self.root is None or self.root.getValue() == value_to_search:
+            return self.root
+        elif self.root.getValue() < value_to_search and self.root.hasRightChild():
+            return self.searchForNodeHelper(self.root.getRightChild(), value_to_search=value_to_search)
+        elif self.root.getValue() > value_to_search and self.root.hasLeftChild():
+            return self.searchForNodeHelper(self.root.getLeftChild(), value_to_search=value_to_search)
+            
+    def searchForNodeHelper(self, current_node: BinarySearchTreeNode, value_to_search):
+        '''
+        This method is a recursive helper method for searching for a value in the binary search tree and returns that node or None if it can't be found
+
+        Parameters :
+            current_node : BinarySearchTreeNode
+                The current node that is being searched under for the value
+            value : int
+                The value that is being searched for in the binary search tree
+
+        Returns :
+            node_with_value : BinarySearchTreeNode or None
+                The node that contains the value being searched for or none if it doesn't exist
+        '''
+
+        if current_node.getValue() == value_to_search:
+             return current_node
+        elif current_node.getValue() < value_to_search and current_node.hasRightChild():
+            return self.searchForNodeHelper(current_node.getRightChild(), value_to_search=value_to_search)
+        elif current_node.getValue() > value_to_search and current_node.hasLeftChild():
+            return self.searchForNodeHelper(current_node.getLeftChild(), value_to_search=value_to_search)
+        else:
+             return None
+        
+    def hasValue(self, value_to_search):
+        '''
+        This method searches for a value in the binary search tree and returns True if it exists
+
+        Parameters :
+            value : int
+                The value that is being searched for in the binary search tree
+        
+        Returns :
+            does_exist : Boolean
+                Whether the value exists in the binary search tree
+        '''
+
+        potential_node = self.searchForNode(value_to_search=value_to_search)
+        if potential_node == None:
+             return False
+        return True
         
 if __name__ == '__main__':
     binary_search_tree = BinarySearchTree(debug=True)
+    binary_search_tree.printNodesInAscendingOrder()
 
     binary_search_tree.insertItem(3)
     binary_search_tree.insertItem(5)
     binary_search_tree.insertItem(43)
+    binary_search_tree.printNodesInAscendingOrder()
     binary_search_tree.insertItem(-2)
     binary_search_tree.insertItem(36)
+    binary_search_tree.printNodesInAscendingOrder()
+
+    print(f"Searching for root value 3: {binary_search_tree.searchForNode(3).getValue()}")
+    print(f"Searching for existing value 36: {binary_search_tree.searchForNode(36).getValue()}")
+    print(f"Searching for existing value -2: {binary_search_tree.searchForNode(-2).getValue()}")
+    print(f"Searching for non existant value -7: {binary_search_tree.hasValue(-7)}")
+    print(f"Searching for non existant value 70: {binary_search_tree.hasValue(70)}")
+    print(f"Searching for non existant value 8: {binary_search_tree.hasValue(8)}")
+
+
