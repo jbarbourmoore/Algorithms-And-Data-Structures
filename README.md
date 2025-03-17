@@ -70,3 +70,40 @@ This min heap could be created:
 
 The heap containing 15 elements has a depth of 4 and a root of 15.   
 Each item's childrean are larger than the item itself and the smallest item is always at the root.   
+
+### Hash Table   
+
+A basic implementation of a hash table data structure. It manages collisions by increasing the hash table's number of rows by a certain factor (default is two) whenever the hash table's load factor is larger than a given value (default is .5) and rehashing and inserting the items in the new hash table.
+
+#### Hash Table Expansion Example   
+
+##### Starting Hash Table with a load factor of .5 (the default maximum)   
+
+| Row | Items |
+|--------| ---- |
+| 1 |   |
+| 2 |  1 , "Item 3"  |
+| 3 |    |
+| 4 | "two" |
+
+##### Adding an extra item which pushes the load factor over the default maximum   
+
+| Row | Items |
+|--------| ---- |
+| 1 |   |
+| 2 |  1 , "Item 3"  |
+| 3 |    |
+| 4 | "two" |
+
+##### Resulting table expanded by a factor of 2 (the default value)     
+
+| Row | Items |
+|--------| ---- |
+| 1 |  "Item 3 |
+| 2 |    |
+| 3 |    |
+| 4 |    |
+| 5 | 1 |
+| 6 |    |
+| 7 | "two" |
+| 8 |     |   
