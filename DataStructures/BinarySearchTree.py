@@ -1,4 +1,4 @@
-
+import statistics
 
 class BinarySearchTreeNode():
     '''
@@ -22,6 +22,25 @@ class BinarySearchTreeNode():
 
         self.left_child = left_child
         self.right_child = right_child
+    
+    def getSuccessorForDeletion(self):
+        '''
+        This method determines the appropriate successor node for when this node is to be deleted from the binary search tree
+        
+        Returns:
+            successor_node : BinarySearchTreeNode
+                The successor node for this node
+        '''
+
+        if self.hasRightChild():
+            successor_node = self.getRightChild()
+        else:
+             return None
+
+        while successor_node.hasLeftChild():
+            successor_node = successor_node.getLeftChild()
+
+        return successor_node
 
     def getValue(self):
          return self.value
@@ -43,6 +62,9 @@ class BinarySearchTreeNode():
     
     def hasRightChild(self):
          return self.right_child != None
+    
+    def setValue(self, value_to_set):
+         self.value = value_to_set
 
 class BinarySearchTree():
     '''
@@ -52,17 +74,40 @@ class BinarySearchTree():
     Each left child node must be smaller than the parent node and each right child node must be larger than the parent node
     '''
 
-    def __init__(self, debug = False):
+    def __init__(self, initial_values_list: list[int], debug = False):
         '''
         This method initializes the binary search tree object
 
         Parameters :
             debug : Boolen (optional)
                 Whether the binary search tree should produce more detailed outputs to help with debugging
+            initial_values_list : [int]
+                A list of values to be inserted into the Binary Search Tree as it is created
         '''
 
         self.root = None
         self.debug = debug
+        self.insertItemList(values=initial_values_list)
+
+    def insertItemList(self, values: list[int]):
+         '''
+         This method inserts multiple value into the binary search tree
+         
+         If there is no root value, it selects the median_low_value from the list to insert first 
+         All other values are submitted in the order they appear in the list
+
+         Parameters:
+            values : [int]
+                The values to be submitted into the binary search tree
+         '''
+
+         if self.root == None:
+              median_low_value = statistics.median_low(values)
+              values.remove(median_low_value)
+              self.insertItem(value=median_low_value)
+
+         for value in values:
+              self.insertItem(value=value)
 
     def insertItem(self, value):
         '''
@@ -208,7 +253,61 @@ class BinarySearchTree():
         if potential_node == None:
              return False
         return True
-        
+    
+
+    def deleteItem(self, value_to_delete):
+        '''
+        This method deletes an item from the binary search tree by calling a recursive method, deleteItemHelper
+
+        Parameters :
+            value_to_delete : int
+                The value of the node to be deleted
+        '''
+
+        if self.root == None:
+            print("Cannot delete an item from a binary search tree without a root")
+        else:
+            self.deleteItemHelper(current_node= self.root, value_to_delete=value_to_delete)
+                     
+
+    def deleteItemHelper(self, current_node: BinarySearchTreeNode, value_to_delete):
+        '''
+        This method is a recursive helper for delete item Which oes through and sets the appropriate child nodes in order to remove an item
+
+        Parameters :
+            current_node : BinarySearchTreeNode
+                The node that is currently being considered for deletion
+            value_to_delete : int
+                The value of the node to be deleted
+        '''
+
+        if self.debug:
+             print(f"Current Node: {current_node.getValue()} Value To Delete: {value_to_delete}")
+             print(f"Has left child: {current_node.hasLeftChild()} Has right child: {current_node.hasRightChild()}")
+
+        if current_node.getValue() > value_to_delete and current_node.hasLeftChild():
+            current_node.setLeftChild(self.deleteItemHelper(current_node.getLeftChild(), value_to_delete))
+            return current_node
+        elif current_node.getValue() < value_to_delete and current_node.hasRightChild():
+            current_node.setRightChild(self.deleteItemHelper(current_node.getRightChild(), value_to_delete))
+            return current_node
+        elif current_node.getValue() == value_to_delete:
+            if not current_node.hasLeftChild():
+                return current_node.getRightChild()
+            if not current_node.hasRightChild():
+                return current_node.getLeftChild()
+            
+            successor_for_deletion = current_node.getSuccessorForDeletion()
+            if successor_for_deletion == None:
+                 current_node = None
+            else:
+                current_node.setValue(successor_for_deletion.getValue())
+                current_node.setRightChild(self.deleteItemHelper(current_node=current_node.getRightChild(), value_to_delete=successor_for_deletion.getValue()))
+        else:
+             print("The item was not found in the binary search tree")
+             return current_node
+            
+    
 if __name__ == '__main__':
     binary_search_tree = BinarySearchTree(debug=True)
     binary_search_tree.printNodesInAscendingOrder()
@@ -227,5 +326,12 @@ if __name__ == '__main__':
     print(f"Searching for non existant value -7: {binary_search_tree.hasValue(-7)}")
     print(f"Searching for non existant value 70: {binary_search_tree.hasValue(70)}")
     print(f"Searching for non existant value 8: {binary_search_tree.hasValue(8)}")
+
+    binary_search_tree.deleteItem(3)
+    binary_search_tree.printNodesInAscendingOrder()
+    binary_search_tree.deleteItem(5)
+    binary_search_tree.printNodesInAscendingOrder()
+    binary_search_tree.deleteItem(-7)
+    binary_search_tree.printNodesInAscendingOrder()
 
 
