@@ -41,7 +41,6 @@ class MinHeapUnitTests(unittest.TestCase):
 
         self.minheap = MinHeap.MinHeap(starting_array)
 
-        # check that the newly created empty dynamic array has an allocated size of 16 and a size of 0
         assert self.minheap.getHeapSize() == 15 and self.minheap.getHeapDepth() == 4
 
         self.print_results()
