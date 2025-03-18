@@ -2,15 +2,17 @@ class UndirectedGraphNode():
     '''
     This class is a node for the undirected graph data structure
     '''
-    def __init__(self, number, parent = None, discovered_time = None, finished_time = None, debug=False):
+    def __init__(self, number, parent = None, connected_nodes=[], discovered_time = None, finished_time = None, debug=False):
         '''
         This method initializes the node for the undirected graph
 
         Parameters :
             number : int
                 The node's number
-            parent : UndirectedGraphNode
-                The parent node (default is None)
+            parent : int
+                The parent node's number (default is None)
+            connected_nodes : [int]
+                The numbers of any connected nodes
             discovered_time : int
                 The counter time when the node was discovered (default is None)
             finished_time : int
@@ -24,6 +26,14 @@ class UndirectedGraphNode():
         self.discovered_time = discovered_time
         self.finished_time = finished_time
         self.debug = debug
+        self.connected_nodes = connected_nodes
+
+    def addConnectedNode(self, connected_node):
+        '''
+        This method adds a connected node to this node, creating an edge
+        '''
+        if connected_node not in self.connected_nodes:
+            self.connected_nodes.append(connected_node)
 
     def resetTraversalInformation(self):
         '''
@@ -33,23 +43,22 @@ class UndirectedGraphNode():
         self.parent = None
         self.discovered_time = None
         self.finished_time = None
-
     
 class UndirectedGraph():
     '''
     This class contains the undirected graph data structure
     '''
 
-    def __init__(self, number_of_nodes, breadth_first=True, debug=False):
+    def __init__(self, number_of_nodes, edge_list=[], breadth_first=True, debug=False):
         '''
         This method initializes the node for the undirected graph
 
         Parameters :
-            number : int
-                The node's number
-            parent : int
-                The number of the parent node
-            breadth_first : None
+            number_of_nodes : int
+                The number of nodes in the graph
+            edge_list : [(int,int)]
+                The edges in the graph
+            breadth_first : Boolean
                 Whether the traversal shall be breadth first rather than depth first (default is True)
             debug : Boolean
                 Whether the print statements should be more informative to allow debugging (default is False)
@@ -60,9 +69,11 @@ class UndirectedGraph():
         self.debug = debug
         self.counter = 0
 
-        self.nodes = []
-        for i in range(0,self.number_of_nodes):
-            self.nodes.append(UndirectedGraphNode(i, debug=self.debug))
+        self.nodes = {}
+        for i in range(0, self.number_of_nodes):
+            self.nodes[i] = UndirectedGraphNode(i, debug=self.debug)
+
+        self.addEdges(edge_list=edge_list)
 
         if self.debug:
             print(f"Created a graph with {number_of_nodes} nodes that is",end=" ")
@@ -70,6 +81,35 @@ class UndirectedGraph():
                 print("in breadth first traversal mode.")
             else:
                 print("in depth first traversal mode.")
+
+    def addEdges(self, edge_list):
+        '''
+        This method adds edges to the graph
+
+        Parameters : 
+            edge_list : []
+                The list of edges to be added to the graph as tuples
+        '''
+
+        for edge in edge_list:
+            start, end = edge
+            self.addAnEdge(start=start,end=end)
+
+    def addAnEdge(self, start, end):
+        '''
+        This method adds a connection between two nodes to the graph
+
+        Parameters :
+            start : int 
+                The first node in the connection
+            end : int
+                The second node in the connection
+        '''
+
+        self.nodes[start].addConnectedNode(end)
+        self.nodes[end].addConnectedNode(start)
+        if(self.debug):
+            print(f"Added a connection between node {start} and node {end}")
     
     def resetTraversalInformation(self):
         '''
@@ -107,4 +147,6 @@ class UndirectedGraph():
         self.counter = 0
 
 if __name__ == '__main__':
-    undirected_graph = UndirectedGraph(6, debug=True)
+
+    edge_list = [(0,1),(1,2),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5)]   
+    undirected_graph = UndirectedGraph(7,edge_list=edge_list, debug=True)
