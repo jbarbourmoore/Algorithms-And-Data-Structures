@@ -312,7 +312,73 @@ class Graph():
                 segments_counted += 1
         return segments_counted
     
+    def getUnvisitedNodes(self):
+        '''
+        This method counts how many unvisited nodes are in a graph
+
+        Returns :
+            unvisited_nodes : [int]
+                The list of unvisited nodes in the graph
+        '''
+
+        unvisited_nodes = []
+        for node_number in range(0, self.number_of_nodes):
+            node = self.nodes[node_number]
+            if node.discovered_time == None:
+                unvisited_nodes.append(node_number)
+        return unvisited_nodes
+    
+    
+    def getNodeDiscoveredTime(self, node_number):
+        '''
+        This method gets the discovered time of a given node
+
+        Parameters :
+            node_number : int
+                The number of the node
+
+        Returns : 
+            discovered_time : int
+                The counter value when the node was discovered
+        '''
+
+        return self.nodes[node_number].discovered_time
+    
+    def getNodeParent(self, node_number):
+        '''
+        This method gets the parent node number of a given node
+
+        Parameters :
+            node_number : int
+                The number of the node
+
+        Returns : 
+            parent : int
+                The node number of the parent node
+        '''
+
+        return self.nodes[node_number].parent
+
+    def getNodeFinishedTime(self, node_number):
+        '''
+        This method gets the finished time of a given node
+
+        Parameters :
+            node_number : int
+                The number of the node
+
+        Returns : 
+            discovered_time : int
+                The counter value when the node was finished
+        '''
+
+        return self.nodes[node_number].finished_time
+        
     def printGraphSummary(self):
+        '''
+        This method prints out a summary of the current graph object
+        '''
+
         if self.directed:
             print("A directed", end=" ")
         else:
