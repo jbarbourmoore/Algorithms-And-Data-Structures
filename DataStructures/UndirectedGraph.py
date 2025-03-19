@@ -1,6 +1,6 @@
 import pandas as pd
 
-class UndirectedGraphNode():
+class GraphNode():
     '''
     This class is a node for the undirected graph data structure
     '''
@@ -55,14 +55,14 @@ class UndirectedGraphNode():
 
     
     
-class UndirectedGraph():
+class Graph():
     '''
     This class contains the undirected graph data structure
     '''
 
-    def __init__(self, number_of_nodes, edge_list=[], breadth_first=True, debug=False):
+    def __init__(self, number_of_nodes, edge_list=[], breadth_first=True, directed=False, debug=False):
         '''
-        This method initializes the node for the undirected graph
+        This method initializes the node for the directed or undirected graph
 
         Parameters :
             number_of_nodes : int
@@ -71,12 +71,15 @@ class UndirectedGraph():
                 The edges in the graph
             breadth_first : Boolean
                 Whether the traversal shall be breadth first rather than depth first (default is True)
+            directed : Boolean
+                Whether the graph is created as a directed or undirected graph
             debug : Boolean
                 Whether the print statements should be more informative to allow debugging (default is False)
         '''
 
         self.number_of_nodes = number_of_nodes
         self.breadth_first = breadth_first
+        self.directed = directed
         self.debug = debug
         self.counter = 0
 
@@ -84,16 +87,13 @@ class UndirectedGraph():
 
         self.nodes = {}
         for i in range(0, self.number_of_nodes):
-            self.nodes[i] = UndirectedGraphNode(i, debug=self.debug)
+            self.nodes[i] = GraphNode(i, debug=self.debug)
 
         self.addEdges(edge_list=edge_list)
 
         if self.debug:
-            print(f"Created a graph with {number_of_nodes} nodes that is",end=" ")
-            if self.breadth_first:
-                print("in breadth first traversal mode.")
-            else:
-                print("in depth first traversal mode.")
+            print(f"Created: ", end=" ")
+            self.printGraphSummary()
 
     def setAsBreadthFirst(self):
         '''
@@ -136,9 +136,12 @@ class UndirectedGraph():
         '''
 
         self.nodes[start].addConnectedNode(end)
-        self.nodes[end].addConnectedNode(start)
+        if not self.directed:
+            self.nodes[end].addConnectedNode(start)
+
         if(self.debug):
-            print(f"Added a connection between node {start} and node {end}")
+            directed_or_undirected = "a directed" if self.directed else "an undirected"
+            print(f"Added {directed_or_undirected} connection between node {start} and node {end}")
     
     def resetTraversalInformation(self):
         '''
@@ -180,10 +183,7 @@ class UndirectedGraph():
         This method prints the grapf at this time
         '''
 
-        if self.breadth_first:
-            print(f"The graph is being traversed breadth first and has {self.number_of_nodes} nodes")
-        else:
-            print(f"The graph is being traversed depth first and has {self.number_of_nodes} nodes")
+        self.printGraphSummary()
 
         for node_number in range(0,self.number_of_nodes):
             node = self.nodes[node_number]
@@ -245,6 +245,10 @@ class UndirectedGraph():
     def getTraversalTable(self):
         '''
         This method creates a table of the current traveral information
+
+        Returns :
+            traversal_table : DataFrame
+                A Dataframe containing the information about the graphs traversal
         '''
 
         node_numbers = []
@@ -270,6 +274,14 @@ class UndirectedGraph():
         return table
     
     def traverseGraph(self):
+        '''
+        This method traverses the entire graph by visiting each node which was not previously visited
+
+        Returns :
+            traversal_table : DataFrame
+                A Dataframe containing the information about the graphs traversal
+        '''
+
         self.resetTraversalInformation()
         if self.debug:
             if self.breadth_first:
@@ -285,18 +297,37 @@ class UndirectedGraph():
         return self.getTraversalTable()
     
     def getIndependantSegmentCount(self):
-        
+        '''
+        This method counts how many unconnected segments are in a graph which has already been traversed
+
+        Returns :
+            segments_counted : int
+                The number of independant segments in the graph
+        '''
+
         segments_counted = 0
         for node_number in range(0, self.number_of_nodes):
             node = self.nodes[node_number]
             if node.parent == None:
                 segments_counted += 1
         return segments_counted
+    
+    def printGraphSummary(self):
+        if self.directed:
+            print("A directed", end=" ")
+        else:
+            print("An undirected", end=" ")
+
+        print(f"graph with {self.number_of_nodes} nodes that is",end=" ")
+        if self.breadth_first:
+            print("in breadth first traversal mode.")
+        else:
+            print("in depth first traversal mode.")
 
 if __name__ == '__main__':
 
     edge_list = [(0,1),(1,2),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5)]   
-    undirected_graph = UndirectedGraph(7,edge_list=edge_list, debug=True)
+    undirected_graph = Graph(7,edge_list=edge_list, debug=True)
     undirected_graph.printGraph()
     undirected_graph.node_visit(0)
     undirected_graph.printGraph()
@@ -315,7 +346,7 @@ if __name__ == '__main__':
     print(depth_table)
 
     extended_edge_list = [(0,1),(1,2),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5),(7,8),(8,9),(9,7)]
-    second_undirected_graph = UndirectedGraph(10, edge_list=extended_edge_list, debug=True)
+    second_undirected_graph = Graph(10, edge_list=extended_edge_list, debug=True)
     second_undirected_graph.node_visit(0)
     node_visit_table = second_undirected_graph.getTraversalTable()
 
@@ -328,3 +359,14 @@ if __name__ == '__main__':
 
     print(f"The original graph has {undirected_graph.getIndependantSegmentCount()} independant segments")
     print(f"The second graph has {second_undirected_graph.getIndependantSegmentCount()} independant segments")
+
+    directed_edge_list = [(0,1),(2,1),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5)]   
+
+    directed_graph = Graph(7,edge_list=directed_edge_list, directed=True, debug=True)
+    undirected_graph = Graph(7,edge_list=directed_edge_list, directed=False, debug=True)
+
+    undirected_graph_table = undirected_graph.traverseGraph()
+    directed_graph_table = directed_graph.traverseGraph()
+
+    print(undirected_graph_table)
+    print(directed_graph_table)
