@@ -53,14 +53,97 @@ class GraphNode():
         if self.parent != None or self.discovered_time != None or self.finished_time != None:
             print(f"Parent: {self.parent} Discovered Time: {self.discovered_time} Finished Time: {self.finished_time}")
 
+class GraphEdgeWithWeight():
+    '''
+    This class contains the details for each edge in a weighted graph
+    '''
+
+    def __init__(self, start_node, end_node, weight, edge_id, directed=False):
+        '''
+        This method initializes the Graph Edge object
+
+        Parameters :
+            start_node : int
+                The number of the node the edge starts at
+            end_node : int 
+                The number of the node the edge ends at
+            weight : int
+                The weight for the edge
+            edge_id : int
+                The edge id
+            directed : Boolean 
+                Whether this edge has a direction
+        '''
+        self.start_node = start_node
+        self.end_node = end_node
+        self.weight = weight
+        self.directed = directed
+        self.edge_id = edge_id
+
+    def getStartNode(self):
+        '''
+        This method returns the start of the edge
+
+        Returns : 
+            start_node : int 
+                The node that the edge begins at
+        '''
+
+        return self.start_node
     
+    def getEndNode(self):
+        '''
+        This method returns the end of the edge
+
+        Returns :
+            end_node : int
+                The node that the edge ends at
+        '''
+
+        return self.end_node
+    
+    def getWeight(self):
+        '''
+        This method returns the edge's weight
+
+        Returns : 
+            weight : int
+                The weight of this edge
+        '''
+
+        return self.weight
+    
+    def printEdge(self):
+        '''
+        This method prints the description for this edge
+        '''
+
+        print(f"The edge from {self.start_node} to {self.end_node} with {self.weight} weight")
+
+    def printEdgeAbbreviated(self):
+        '''
+        This method prints the abbreviated edge summary
+        '''
+
+        print(f"{self.edge_id}: (s={self.start_node}, e={self.end_node}, w={self.weight})", end= " ")
+
+    def getStartEndWeight(self):
+        '''
+        This method returns a tuple of the start_node, end_node and weight
+
+        Returns:
+            edge_dimensions : (int, int, int)
+                The start node, end node and weight for the route
+        '''
+
+        return self.start_node, self.end_node, self.weight
     
 class Graph():
     '''
     This class contains the undirected graph data structure
     '''
 
-    def __init__(self, number_of_nodes, edge_list=[], breadth_first=True, directed=False, debug=False):
+    def __init__(self, number_of_nodes, edge_list=[], is_breadth_first=True, is_directed=False, is_weighted=False, is_debug=False):
         '''
         This method initializes the node for the directed or undirected graph
 
@@ -78,20 +161,24 @@ class Graph():
         '''
 
         self.number_of_nodes = number_of_nodes
-        self.breadth_first = breadth_first
-        self.directed = directed
-        self.debug = debug
+        self.is_breadth_first = is_breadth_first
+        self.is_directed = is_directed
+        self.is_weighted = is_weighted
+
+        self.is_debug = is_debug
+
         self.counter = 0
 
         self.back_edges = []
 
         self.nodes = {}
         for i in range(0, self.number_of_nodes):
-            self.nodes[i] = GraphNode(i, debug=self.debug)
+            self.nodes[i] = GraphNode(i, debug=self.is_debug)
 
+        self.weighted_edges = []
         self.addEdges(edge_list=edge_list)
 
-        if self.debug:
+        if self.is_debug:
             print(f"Created: ", end=" ")
             self.printGraphSummary()
 
@@ -101,7 +188,7 @@ class Graph():
         '''
 
         self.resetTraversalInformation()
-        self.breadth_first = True
+        self.is_breadth_first = True
 
     def setAsDepthFirst(self):
         '''
@@ -109,7 +196,7 @@ class Graph():
         '''
 
         self.resetTraversalInformation()
-        self.breadth_first = False
+        self.is_breadth_first = False
 
     def addEdges(self, edge_list):
         '''
@@ -121,10 +208,30 @@ class Graph():
         '''
 
         for edge in edge_list:
-            start, end = edge
-            self.addAnEdge(start=start,end=end)
+            if self.is_weighted :
+                start, end, weight = edge
+                self.addWeightedEdge(start=start, end=end, weight=weight)
+            else :
+                start, end = edge
+                self.addUnweightedEdge(start=start,end=end)
 
-    def addAnEdge(self, start, end):
+    def addWeightedEdge(self,start,end,weight):
+        '''
+        This method adds a weighted connection between two nodes to the graph
+
+        Parameters :
+            start : int 
+                The first node in the connection
+            end : int
+                The second node in the connection
+            weight : int
+                The weight of the edge
+        '''
+        edge_id = len(self.weighted_edges)
+        self.weighted_edges.append(GraphEdgeWithWeight(start_node=start, end_node=end, weight=weight, edge_id=edge_id))
+        self.addUnweightedEdge(start=start,end=end)
+
+    def addUnweightedEdge(self, start, end):
         '''
         This method adds a connection between two nodes to the graph
 
@@ -136,11 +243,11 @@ class Graph():
         '''
 
         self.nodes[start].addConnectedNode(end)
-        if not self.directed:
+        if not self.is_directed:
             self.nodes[end].addConnectedNode(start)
 
-        if(self.debug):
-            directed_or_undirected = "a directed" if self.directed else "an undirected"
+        if(self.is_debug):
+            directed_or_undirected = "a directed" if self.is_directed else "an undirected"
             print(f"Added {directed_or_undirected} connection between node {start} and node {end}")
     
     def resetTraversalInformation(self):
@@ -206,7 +313,7 @@ class Graph():
 
         connected_node_numbers = node.connected_nodes
 
-        if self.breadth_first:
+        if self.is_breadth_first:
             visit_list = []
             for neighbor_number in connected_node_numbers:
                 neighbor = self.nodes[neighbor_number]
@@ -283,8 +390,8 @@ class Graph():
         '''
 
         self.resetTraversalInformation()
-        if self.debug:
-            if self.breadth_first:
+        if self.is_debug:
+            if self.is_breadth_first:
                 print("Traversing graph breadth first")
             else:
                 print("Traversing graph depth first")
@@ -379,21 +486,33 @@ class Graph():
         This method prints out a summary of the current graph object
         '''
 
-        if self.directed:
+        if self.is_directed:
             print("A directed", end=" ")
         else:
             print("An undirected", end=" ")
 
         print(f"graph with {self.number_of_nodes} nodes that is",end=" ")
-        if self.breadth_first:
+        if self.is_breadth_first:
             print("in breadth first traversal mode.")
         else:
             print("in depth first traversal mode.")
 
+    def printWeightedEdges(self):
+        for weighted_edge in self.weighted_edges:
+            weighted_edge.printEdge()
+        
+    def printWeightEdgesAbbreviated(self):
+        for weighted_edge in self.weighted_edges:
+            weighted_edge.printEdgeAbbreviated()
+        print()
+
+    def sortWeightedEdges(self):
+        self.weighted_edges = sorted(self.weighted_edges, key=lambda edg_data: edg_data.weight)
+
 if __name__ == '__main__':
 
     edge_list = [(0,1),(1,2),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5)]   
-    undirected_graph = Graph(7,edge_list=edge_list, debug=True)
+    undirected_graph = Graph(7,edge_list=edge_list, is_debug=True)
     undirected_graph.printGraph()
     undirected_graph.node_visit(0)
     undirected_graph.printGraph()
@@ -412,7 +531,7 @@ if __name__ == '__main__':
     print(depth_table)
 
     extended_edge_list = [(0,1),(1,2),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5),(7,8),(8,9),(9,7)]
-    second_undirected_graph = Graph(10, edge_list=extended_edge_list, debug=True)
+    second_undirected_graph = Graph(10, edge_list=extended_edge_list, is_debug=True)
     second_undirected_graph.node_visit(0)
     node_visit_table = second_undirected_graph.getTraversalTable()
 
@@ -428,11 +547,28 @@ if __name__ == '__main__':
 
     directed_edge_list = [(0,1),(2,1),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5)]   
 
-    directed_graph = Graph(7,edge_list=directed_edge_list, directed=True, debug=True)
-    undirected_graph = Graph(7,edge_list=directed_edge_list, directed=False, debug=True)
+    directed_graph = Graph(7,edge_list=directed_edge_list, is_directed=True, is_debug=True)
+    undirected_graph = Graph(7,edge_list=directed_edge_list, is_directed=False, is_debug=True)
 
     undirected_graph_table = undirected_graph.traverseGraph()
     directed_graph_table = directed_graph.traverseGraph()
 
+    print("The table of the undirected graph traversal data:")
     print(undirected_graph_table)
+    print("The table of the directed graph traversal data:")
+
     print(directed_graph_table)
+
+    weighted_edge_list = [(0,1,1),(2,1,2),(2,3,1),(3,4,1),(4,5,2),(5,6,1),(1,6,4),(6,3,1),(2,4,1),(2,5,3)]
+
+    weighted_graph = Graph(7,edge_list=weighted_edge_list,is_directed=False,is_weighted=True)
+    weighted_graph_table = weighted_graph.traverseGraph()
+
+    print("The table of the weighted graph traversal data:")
+    print(weighted_graph_table)
+
+    print("The weighted edges prior to sorting by weight:")
+    weighted_graph.printWeightEdgesAbbreviated()
+    weighted_graph.sortWeightedEdges()
+    print("The weighted edges sorted by weight:")
+    weighted_graph.printWeightEdgesAbbreviated()

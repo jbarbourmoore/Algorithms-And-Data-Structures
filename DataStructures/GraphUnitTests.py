@@ -1,5 +1,5 @@
 import unittest
-from UndirectedGraph import Graph,GraphNode
+from Graph import Graph, GraphNode
 
 class GraphUnitTests(unittest.TestCase):
     '''
@@ -22,7 +22,7 @@ class GraphUnitTests(unittest.TestCase):
         This method tests undirected breadth first travel from the first node
         '''
 
-        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, breadth_first=True, directed=False, debug=False)
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, is_breadth_first=True, is_directed=False, is_debug=False)
         
         self.assertEqual(len(graph.getUnvisitedNodes()),10)
 
@@ -43,7 +43,7 @@ class GraphUnitTests(unittest.TestCase):
         This method tests directed breadth first travel from the first node
         '''
 
-        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, breadth_first=True, directed=True, debug=False)
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, is_breadth_first=True, is_directed=True, is_debug=False)
         
         self.assertEqual(len(graph.getUnvisitedNodes()),10)
 
@@ -64,7 +64,7 @@ class GraphUnitTests(unittest.TestCase):
         This method tests directed breadth first travel from the first node
         '''
 
-        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, breadth_first=False, directed=False, debug=False)
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, is_breadth_first=False, is_directed=False, is_debug=False)
         
         self.assertEqual(len(graph.getUnvisitedNodes()),10)
 
@@ -84,7 +84,7 @@ class GraphUnitTests(unittest.TestCase):
         This method tests directed depth first travel from the first node
         '''
 
-        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, breadth_first=False, directed=True, debug=False)
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, is_breadth_first=False, is_directed=True, is_debug=False)
         
         self.assertEqual(len(graph.getUnvisitedNodes()),10)
 
@@ -104,7 +104,7 @@ class GraphUnitTests(unittest.TestCase):
         This method tests directed depth first travered
         '''
 
-        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, breadth_first=False, directed=True, debug=False)
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, is_breadth_first=False, is_directed=True, is_debug=False)
         
         self.assertEqual(len(graph.getUnvisitedNodes()),10)
 
@@ -123,7 +123,7 @@ class GraphUnitTests(unittest.TestCase):
         This method tests undirected depth first travered
         '''
 
-        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, breadth_first=False, directed=False, debug=False)
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, is_breadth_first=False, is_directed=False, is_debug=False)
         
         self.assertEqual(len(graph.getUnvisitedNodes()),10)
 
@@ -142,7 +142,7 @@ class GraphUnitTests(unittest.TestCase):
         This method tests undirected breadth first travered
         '''
 
-        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, breadth_first=True, directed=False, debug=False)
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, is_breadth_first=True, is_directed=False, is_debug=False)
         
         self.assertEqual(len(graph.getUnvisitedNodes()),10)
 
@@ -161,7 +161,7 @@ class GraphUnitTests(unittest.TestCase):
         This method tests directed breadth first travered
         '''
 
-        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, breadth_first=True, directed=True, debug=False)
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, is_breadth_first=True, is_directed=True, is_debug=False)
         
         self.assertEqual(len(graph.getUnvisitedNodes()),10)
 
