@@ -268,6 +268,30 @@ class UndirectedGraph():
         }
         table = pd.DataFrame.from_dict(data_dictionary)
         return table
+    
+    def traverseGraph(self):
+        self.resetTraversalInformation()
+        if self.debug:
+            if self.breadth_first:
+                print("Traversing graph breadth first")
+            else:
+                print("Traversing graph depth first")
+
+        for node_number in range(0, self.number_of_nodes):
+            node = self.nodes[node_number]
+            if node.discovered_time == None:
+                self.node_visit(node_number)
+
+        return self.getTraversalTable()
+    
+    def getIndependantSegmentCount(self):
+        
+        segments_counted = 0
+        for node_number in range(0, self.number_of_nodes):
+            node = self.nodes[node_number]
+            if node.parent == None:
+                segments_counted += 1
+        return segments_counted
 
 if __name__ == '__main__':
 
@@ -289,3 +313,18 @@ if __name__ == '__main__':
     print(breadth_table)
     print("\nDepth First Traveral Table")
     print(depth_table)
+
+    extended_edge_list = [(0,1),(1,2),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5),(7,8),(8,9),(9,7)]
+    second_undirected_graph = UndirectedGraph(10, edge_list=extended_edge_list, debug=True)
+    second_undirected_graph.node_visit(0)
+    node_visit_table = second_undirected_graph.getTraversalTable()
+
+    traverse_graph_table = second_undirected_graph.traverseGraph()
+
+    print("First Node Visit Table")
+    print(node_visit_table)
+    print("\nTraverse Graph Table")
+    print(traverse_graph_table)
+
+    print(f"The original graph has {undirected_graph.getIndependantSegmentCount()} independant segments")
+    print(f"The second graph has {second_undirected_graph.getIndependantSegmentCount()} independant segments")
