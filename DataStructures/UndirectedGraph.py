@@ -1,8 +1,10 @@
+import pandas as pd
+
 class UndirectedGraphNode():
     '''
     This class is a node for the undirected graph data structure
     '''
-    def __init__(self, number, parent = None, connected_nodes=[], discovered_time = None, finished_time = None, debug=False):
+    def __init__(self, number, parent = None, discovered_time = None, finished_time = None, debug=False):
         '''
         This method initializes the node for the undirected graph
 
@@ -11,8 +13,6 @@ class UndirectedGraphNode():
                 The node's number
             parent : int
                 The parent node's number (default is None)
-            connected_nodes : [int]
-                The numbers of any connected nodes
             discovered_time : int
                 The counter time when the node was discovered (default is None)
             finished_time : int
@@ -26,7 +26,7 @@ class UndirectedGraphNode():
         self.discovered_time = discovered_time
         self.finished_time = finished_time
         self.debug = debug
-        self.connected_nodes = connected_nodes
+        self.connected_nodes = []
 
     def addConnectedNode(self, connected_node):
         '''
@@ -43,6 +43,17 @@ class UndirectedGraphNode():
         self.parent = None
         self.discovered_time = None
         self.finished_time = None
+
+    def printNode(self):
+        '''
+        This method prints out the current information for this node
+        '''
+
+        print(f"Node {self.number} is connected to nodes {self.connected_nodes}")
+        if self.parent != None or self.discovered_time != None or self.finished_time != None:
+            print(f"Parent: {self.parent} Discovered Time: {self.discovered_time} Finished Time: {self.finished_time}")
+
+    
     
 class UndirectedGraph():
     '''
@@ -69,6 +80,8 @@ class UndirectedGraph():
         self.debug = debug
         self.counter = 0
 
+        self.back_edges = []
+
         self.nodes = {}
         for i in range(0, self.number_of_nodes):
             self.nodes[i] = UndirectedGraphNode(i, debug=self.debug)
@@ -81,6 +94,22 @@ class UndirectedGraph():
                 print("in breadth first traversal mode.")
             else:
                 print("in depth first traversal mode.")
+
+    def setAsBreadthFirst(self):
+        '''
+        This method resets the traversal information and sets the graph to be traversed breadth first
+        '''
+
+        self.resetTraversalInformation()
+        self.breadth_first = True
+
+    def setAsDepthFirst(self):
+        '''
+        This method resets the traversal information and sets the graph to be traversed depth first
+        '''
+
+        self.resetTraversalInformation()
+        self.breadth_first = False
 
     def addEdges(self, edge_list):
         '''
@@ -116,8 +145,8 @@ class UndirectedGraph():
         This method resets the traversal information for all of the nodes
         '''
 
-        for node in self.nodes:
-            node.resetTraversalInformation()
+        for node_number in range(0,self.number_of_nodes):
+            self.nodes[node_number].resetTraversalInformation()
 
         self.resetCounter()
 
@@ -146,7 +175,117 @@ class UndirectedGraph():
 
         self.counter = 0
 
+    def printGraph(self):
+        '''
+        This method prints the grapf at this time
+        '''
+
+        if self.breadth_first:
+            print(f"The graph is being traversed breadth first and has {self.number_of_nodes} nodes")
+        else:
+            print(f"The graph is being traversed depth first and has {self.number_of_nodes} nodes")
+
+        for node_number in range(0,self.number_of_nodes):
+            node = self.nodes[node_number]
+            node.printNode()
+        
+    def node_visit(self, node_number):
+        '''
+        This method is a recursive method to visit all nodes after this point based on whether the current traversal style is breadth first or depth first
+        
+        Parameters :
+            node_number : int
+                The number of the node the traversal is starting at
+        '''
+
+        node = self.nodes[node_number]
+        
+        if node.discovered_time == None:
+            node.discovered_time = self.getCounter()
+            self.incrementCounter()
+
+        connected_node_numbers = node.connected_nodes
+
+        if self.breadth_first:
+            visit_list = []
+            for neighbor_number in connected_node_numbers:
+                neighbor = self.nodes[neighbor_number]
+                if neighbor.discovered_time == None:
+                    visit_list.append(neighbor_number)
+                    neighbor.discovered_time = self.getCounter()
+                    neighbor.parent = node.number
+                    self.incrementCounter()
+                elif neighbor.finished_time == None:
+                    self.back_edges.append((node.number,neighbor.number))
+            for neighbor_number in visit_list:
+                self.node_visit(neighbor_number)
+
+        else:
+            for neighbor_number in connected_node_numbers:    
+                neighbor = self.nodes[neighbor_number]
+                if neighbor.discovered_time == None:
+                    neighbor.parent = node.number
+                    self.node_visit(neighbor_number)
+
+                elif neighbor.finished_time == None:
+                    self.back_edges.append((node.number,neighbor.number))
+
+        node.finished_time = self.getCounter()
+        self.incrementCounter()
+
+    def printTraversalDataTable(self):
+        '''
+        This method outputs the traversal data in a table
+        '''
+
+        table = self.getTraversalTable()
+
+        print(table)
+
+    def getTraversalTable(self):
+        '''
+        This method creates a table of the current traveral information
+        '''
+
+        node_numbers = []
+        node_parents = []
+        node_discovered_times = []
+        node_finished_times = []
+
+        for node_number in range(0,self.number_of_nodes):
+            node = self.nodes[node_number]
+
+            node_numbers.append(node_number)
+            node_parents.append(node.parent)
+            node_discovered_times.append(node.discovered_time)
+            node_finished_times.append(node.finished_time)
+        
+        data_dictionary ={
+            "Node":node_numbers,
+            "Parent":node_parents,
+            "Discovered":node_discovered_times,
+            "Finished":node_finished_times
+        }
+        table = pd.DataFrame.from_dict(data_dictionary)
+        return table
+
 if __name__ == '__main__':
 
     edge_list = [(0,1),(1,2),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5)]   
     undirected_graph = UndirectedGraph(7,edge_list=edge_list, debug=True)
+    undirected_graph.printGraph()
+    undirected_graph.node_visit(0)
+    undirected_graph.printGraph()
+    
+    breadth_table = undirected_graph.getTraversalTable()
+    
+    undirected_graph.setAsDepthFirst()
+    undirected_graph.node_visit(0)
+    undirected_graph.printGraph()
+
+    depth_table = undirected_graph.getTraversalTable()
+
+    print("Breadth First Traversal Table")
+    print(breadth_table)
+    print("\nDepth First Traveral Table")
+    print(depth_table)
