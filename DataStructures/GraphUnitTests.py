@@ -1,5 +1,5 @@
 import unittest
-from Graph import Graph, GraphNode
+from Graph import Graph
 
 class GraphUnitTests(unittest.TestCase):
     '''
@@ -236,6 +236,47 @@ class GraphUnitTests(unittest.TestCase):
 
         self.assertEqual(parents, None)
         self.assertEqual(distances, None)
+
+    def test_unweighted_directed_Dajkstra(self):
+        '''
+        This method tests dajkstra using an unweighted, directed graph
+        '''
+
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.edge_list, is_breadth_first=True, is_directed=True, is_debug=False)
+        
+        distances, paths = graph.findAllPathsDajkstra()
+        print(paths)
+
+
+    def test_unweighted_undirected_dajkstra(self):
+        '''
+        This method tests dajkstra using an unweighted, undirected graph
+        '''
+
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.edge_list, is_breadth_first=True, is_directed=False, is_debug=False)
+        
+        distances, paths = graph.findAllPathsDajkstra()
+        print(paths)
+
+    def test_weighted_directed_dajkstra(self):
+        '''
+        This method tests dajkstra using a weighted, directed graph
+        '''
+
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.weighted_edge_list, is_breadth_first=True, is_directed=True, is_weighted=True, is_debug=False)
+        
+        distances, paths = graph.findAllPathsDajkstra()
+        print(paths)
+
+    def test_weighted_dajkstra_bellman(self):
+        '''
+        This method tests dajkstra using a weighted, undirected graph
+        '''
+
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.weighted_edge_list, is_breadth_first=True, is_directed=False, is_weighted=True, is_debug=False)
+        
+        distances, paths = graph.findAllPathsDajkstra()
+        print(paths)
 
 if __name__ == '__main__':
     unittest.main()

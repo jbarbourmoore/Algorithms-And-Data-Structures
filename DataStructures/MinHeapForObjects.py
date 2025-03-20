@@ -1,6 +1,6 @@
 import math
 
-from Graph import GraphNode
+import Graph
 
 class MinHeapForObjects:
     '''
@@ -9,7 +9,7 @@ class MinHeapForObjects:
 
     array = []
 
-    def __init__(self, array=[]):
+    def __init__(self, array=None):
         '''
         This method initializes the minheap data structure based on a giveb starting array 
 
@@ -17,6 +17,9 @@ class MinHeapForObjects:
             array : [int], optional
                 The array that the minheap shall be created around (default is the empty array [])
         '''
+        if array == None:
+            array = []
+
         self.swap_count = 0
         self.array = array
         self.heapify()
@@ -271,7 +274,7 @@ class MinHeapForObjects:
 
         Parameters :
             item : Object
-                The item that may need to be moved
+                The item that may need to be reordered
         '''
 
         starting_position = self.array.index(item)
@@ -313,29 +316,29 @@ if __name__ == '__main__':
     starting_array = []
 
     for i in range (0,14):
-        starting_array.append(GraphNode(number=i,parent=i-1, distance=i))
+        starting_array.append(Graph.GraphNode(number=i,parent=i-1, distance=i))
 
     minheap = MinHeapForObjects(starting_array)
     minheap.printHeap()
     minheap.printHeapDimensions()
 
     i=i+1
-    newNode = GraphNode(number=i,parent=i-1, distance=i)
+    newNode = Graph.GraphNode(number=i,parent=i-1, distance=i)
     minheap.addItem(newNode)
     minheap.printHeap()
     minheap.printHeapDimensions()
     i=i+1
-    newNode_2 = GraphNode(number=i,parent=i-1, distance=1)
+    newNode_2 = Graph.GraphNode(number=i,parent=i-1, distance=1)
     minheap.addItem(newNode_2)
     minheap.printHeap()
     minheap.printHeapDimensions()
     i=i+1
-    newNode_3 = GraphNode(number=i,parent=i-1, distance=-2)
+    newNode_3 = Graph.GraphNode(number=i,parent=i-1, distance=-2)
     minheap.addItem(newNode_3)
     minheap.printHeap()
     minheap.printHeapDimensions()
     i=i+1
-    newNode_4 = GraphNode(number=i,parent=i-1, distance=1)
+    newNode_4 = Graph.GraphNode(number=i,parent=i-1, distance=1)
     minheap.addItemToFront(newNode_4)
     minheap.printHeap()
     minheap.printHeapDimensions()

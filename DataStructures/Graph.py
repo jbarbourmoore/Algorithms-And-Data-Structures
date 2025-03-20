@@ -36,6 +36,16 @@ class GraphNode():
         self.is_visited = False
         self.is_in_queue = False
 
+    def resetTrackersForDajkstra(self):
+        '''
+        This method resets the trackers for djakstra's algoithm so it may be ran again
+        '''
+
+        self.is_visited = False
+        self.is_in_queue = False
+        self.parent = None
+        self.distance = None
+
     def getPriority(self):
         '''
         This method returns the nodes current distance value for use in the priority min heap for dijkstra's algorithm
@@ -662,7 +672,7 @@ class Graph():
         priority_queue = MinHeapForObjects.MinHeapForObjects()
         start_node = self.nodes[start_node_index]
         end_node = self.nodes[end_node_index]
-
+        found_end_node = False
 
         start_node.distance = 0
         
@@ -676,6 +686,7 @@ class Graph():
 
             if current_node.number == end_node.number :
                 end_node = current_node
+                found_end_node = True
                 break
 
             neighbors = current_node.connected_nodes
@@ -686,7 +697,7 @@ class Graph():
                 edge_weight = neighbor_weights[i]
 
                 if neighbor_node.is_visited == False and ( (neighbor_node.distance != None and neighbor_node.distance > current_node.distance + edge_weight) or neighbor_node.distance == None ):
-                    # print(f"({neighbor_vertex.x},{neighbor_vertex.y}) -> Dist = {current_vertex.d + edge_weight} and Parent = ({current_vertex.x},{current_vertex.y})")
+                    # print(f"({neighbor_node.number}) -> Dist = {current_node.distance + edge_weight} and Parent = ({current_node.number})")
                     neighbor_node.distance = current_node.distance + edge_weight
                     neighbor_node.parent = current_node.number
                     if not neighbor_node.is_in_queue :
@@ -694,14 +705,50 @@ class Graph():
                     else :
                         priority_queue.updateItemPriority(neighbor_node)
 
-        path = []
-        parent = end_node.number
-        while parent != None :
-            path.insert(0, parent)
-            parent_node = self.nodes[parent]
-            parent = parent_node.parent
+        if found_end_node:
+            path = []
+            parent = end_node.number
+            while parent != None :
+                path.insert(0, parent)
+                parent_node = self.nodes[parent]
+                parent = parent_node.parent
+        else:
+            path = None
 
+        # print(f"Calculating from {start_node_index} to {end_node_index} distance is {end_node.distance}")
         return path, end_node.distance
+    
+    def resetAllNodesTrackersForDajkstra(self):
+        '''
+        This method resets the trackers used for djakstra's algorithm for all nodes in the graph
+        '''
+
+        for i in range(0, self.number_of_nodes):
+            self.nodes[i].resetTrackersForDajkstra()
+
+    def findAllPathsDajkstra(self):
+        distances_dictionary = {}
+        paths_dictionary = {}
+
+        for start_index in range(0, self.number_of_nodes):
+
+            distances_list = []
+            paths_list = []
+
+            for end_index in range(0, self.number_of_nodes):
+                self.resetAllNodesTrackersForDajkstra()
+
+                path, distance = self.shortestPathBetweenTwoNodesUsingDajkstra(start_node_index=start_index,end_node_index=end_index)
+                distances_list.append(distance)
+                paths_list.append(path)
+
+            distances_dictionary[start_index] = distances_list
+            paths_dictionary[start_index] = paths_list
+
+        distances_dataframe = pd.DataFrame.from_dict(distances_dictionary)
+        paths_dataframe = pd.DataFrame.from_dict(paths_dictionary)
+
+        return distances_dataframe, paths_dataframe
 
 if __name__ == '__main__':
 
@@ -740,17 +787,28 @@ if __name__ == '__main__':
     print(f"The second graph has {second_undirected_graph.getIndependantSegmentCount()} independant segments")
 
     directed_edge_list = [(0,1),(2,1),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5)]   
+    print(f"\nGiven a graph with 7 nodes, numbered 0-6, connected with these unweighted edges : {directed_edge_list}")
 
-    directed_graph = Graph(7,edge_tuples=directed_edge_list, is_directed=True, is_debug=True)
-    undirected_graph = Graph(7,edge_tuples=directed_edge_list, is_directed=False, is_debug=True)
+    directed_graph = Graph(7,edge_tuples=directed_edge_list, is_directed=True, is_debug=False)
+    undirected_graph = Graph(7,edge_tuples=directed_edge_list, is_directed=False, is_debug=False)
 
     undirected_graph_table = undirected_graph.traverseGraph()
     directed_graph_table = directed_graph.traverseGraph()
 
-    print("The table of the undirected graph traversal data:")
+    print("\nThe table of the undirected graph breadth first traversal data:")
     print(undirected_graph_table)
-    print("The table of the directed graph traversal data:")
+    print("\nThe table of the directed graph breadth first traversal data:")
+    print(directed_graph_table)
 
+    directed_graph = Graph(7,edge_tuples=directed_edge_list, is_breadth_first=False, is_directed=True, is_debug=False)
+    undirected_graph = Graph(7,edge_tuples=directed_edge_list, is_breadth_first=False, is_directed=False, is_debug=False)
+
+    undirected_graph_table = undirected_graph.traverseGraph()
+    directed_graph_table = directed_graph.traverseGraph()
+
+    print("\nThe table of the undirected graph depth first traversal data:")
+    print(undirected_graph_table)
+    print("\nThe table of the directed graph depth first traversal data:")
     print(directed_graph_table)
 
     weighted_edge_list = [(0,1,1),(2,1,2),(2,3,1),(3,4,1),(4,5,2),(5,6,1),(1,6,4),(6,3,1),(2,4,1),(2,5,3)]
@@ -774,10 +832,49 @@ if __name__ == '__main__':
     unweighted_graph = Graph(7,edge_tuples=edge_list, is_weighted=False, is_debug=False)
     unweighted_graph.getBellmanFordDirectedComparisonDataFrame(3)
 
+    print("\n Shortest path and distance between 0 and 5 in a weighted graph using Dajkstra's Algorithm")
     path, distance = weighted_graph.shortestPathBetweenTwoNodesUsingDajkstra(0,5)
     print(path)
     print(distance)
 
+    print("\n Shortest path and distance between 0 and 5 in an unweighted graph using Dajkstra's Algorithm")
     path, distance = unweighted_graph.shortestPathBetweenTwoNodesUsingDajkstra(0,5)
     print(path)
     print(distance)
+    edges_dajkstra = [(0,1),(2,1),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5),(7,8),(9,8),(9,7)]   
+    weighted_edges_dajkstra = [(0,1,2),(2,1,1),(2,3,4),(3,4,6),(4,5,3),(5,6,2),(1,6,10),(6,3,3),(2,4,4),(2,5,2),(7,8,5),(9,8,2),(9,7,1)]
+
+    unweighted_undirected_dajkstra_graph = Graph(10,edge_tuples=edges_dajkstra, is_weighted=False, is_directed=False, is_debug=False)
+    unweighted_directed_dajkstra_graph = Graph(10,edge_tuples=edges_dajkstra, is_weighted=False, is_directed=True, is_debug=False)
+    weighted_undirected_dajkstra_graph = Graph(10,edge_tuples=weighted_edges_dajkstra, is_weighted=True, is_directed=False, is_debug=False)
+    weighted_directed_dajkstra_graph = Graph(10,edge_tuples=weighted_edges_dajkstra, is_weighted=True, is_directed=True, is_debug=False)
+
+    print("\n\n Given a graph with 10 nodes numbered 0-9 and the following 13 edges where s is the index of the start node, e is the index of the end node and w is the edge weight if the graph is weighted.")
+    weighted_directed_dajkstra_graph.printWeightEdgesAbbreviated()
+    print("\n Shortest distance between all nodes in an unweighted, undirected graph using Dajkstra's Algorithm")
+    unweighted_undirected_distances, unweighted_undirected_paths = unweighted_undirected_dajkstra_graph.findAllPathsDajkstra()
+    print(unweighted_undirected_distances)
+
+    print("\n Shortest distance between all nodes in an unweighted, directed graph using Dajkstra's Algorithm")
+    unweighted_directed_distances, unweighted_directed_paths = unweighted_directed_dajkstra_graph.findAllPathsDajkstra()
+    print(unweighted_directed_distances)
+
+    print("\n Shortest distance between all nodes in a weighted, undirected graph using Dajkstra's Algorithm")
+    weighted_distances, weighted_paths = weighted_undirected_dajkstra_graph.findAllPathsDajkstra()
+    print(weighted_distances)
+
+    print("\n Shortest distance between all nodes in a weighted, directed graph using Dajkstra's Algorithm")
+    weighted_directed_distances, weighted_directed_paths = weighted_directed_dajkstra_graph.findAllPathsDajkstra()
+    print(weighted_directed_distances)
+    
+    print("\n\n Given a graph with 7 nodes numbered 0-6 and the following 9 edges where s is the index of the start node, e is the index of the end node and w is the edge weight if the graph is weighted.")
+    weighted_directed_dajkstra_graph.printWeightEdgesAbbreviated()
+    print("\n Shortest path between all nodes in an unweighted, undirected graph using Dajkstra's Algorithm")
+    print(unweighted_undirected_paths)  
+    print("\n Shortest path between all nodes in an unweighted, directed graph using Dajkstra's Algorithm")  
+    print(unweighted_directed_paths)
+    print("\n Shortest path between all nodes in a weighted, undirected graph using Dajkstra's Algorithm")
+    print(weighted_paths)
+    print("\n Shortest path between all nodes in a weighted, directed graph using Dajkstra's Algorithm")
+    print(weighted_directed_paths)
+    print("\n\n")
