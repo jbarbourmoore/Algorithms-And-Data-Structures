@@ -107,3 +107,23 @@ A basic implementation of a hash table data structure. It manages collisions by 
 | 6 |    |
 | 7 | "two" |
 | 8 |     |   
+
+### Binary Search Tree    
+
+The binary search tree itself does not store much information. It holds one binary search tree node, or the "root". Each Binary Search Node contains the information for its own value as well as it's right and left children. All left children must be smaller than their parent and all right node children must be larger than their parent. This allows an item to be located in the binary search tree by comparing it to a node and then choosing whether to continue to the left child or the right child for further comparions.   
+
+### Graph   
+
+The graph data structure is defined using nodes and edges with multiple Boolean parameters to allow each graph object to be constructed for a specific purpose or algorithm. (Definitely not an efficient implementation of a graph, simply interesting to play with in this case)   
+
+#### Breadth or Depth First Traversal   
+
+The is_breadth Boolean determines whether the traversal methods will run breadth first (visiting each descendant of a node before visiting the descendants' descendants) or depth first (visiting the first descendant of the node and each first descendant of that node until there are no further descendants before visiting the other descendants of the node and repeating)    
+
+#### Weighted or Unweighted Edges    
+
+The is_weighted Boolean determines whether the edges in a graph are weighted. This weight data is used when calculating the shortest distance to each node and similar algorithms. Unweighted graphs default to each edge weighted 1 for the sake of the calculations.   
+ 
+#### Directed or Undirected Edges    
+
+The is_directed Boolean determines whether the edges in a graph strictly travel from the start node to the end node or if they are reversable.   
