@@ -1,22 +1,26 @@
 import pandas as pd
 
+import MinHeapForObjects
+
 class GraphNode():
     '''
     This class is a node for the undirected graph data structure
     '''
-    def __init__(self, number, parent = None, discovered_time = None, finished_time = None, debug=False):
+    def __init__(self, number, parent = None, discovered_time = None, finished_time = None, distance = None, debug=False):
         '''
         This method initializes the node for the undirected graph
 
         Parameters :
             number : int
                 The node's number
-            parent : int
+            parent : int, optional
                 The parent node's number (default is None)
-            discovered_time : int
+            discovered_time : int, optional
                 The counter time when the node was discovered (default is None)
-            finished_time : int
+            finished_time : int, optional
                 The counter time when the node was finished (default is None)
+            distance : int, optional
+                The current minimum distance for the node
             debug : Boolean
                 Whether the print statements should be more informative to allow debugging (default is False)
         '''
@@ -25,15 +29,31 @@ class GraphNode():
         self.parent = parent
         self.discovered_time = discovered_time
         self.finished_time = finished_time
+        self.distance = distance
         self.debug = debug
         self.connected_nodes = []
+        self.connected_edge_weights = []
+        self.is_visited = False
+        self.is_in_queue = False
 
-    def addConnectedNode(self, connected_node):
+    def getPriority(self):
+        '''
+        This method returns the nodes current distance value for use in the priority min heap for dijkstra's algorithm
+        
+        Returns :
+            distance, int
+                the node's current calculated minimum distance
+        '''
+
+        return self.distance
+
+    def addConnectedNode(self, connected_node, connected_weight = 1):
         '''
         This method adds a connected node to this node, creating an edge
         '''
         if connected_node not in self.connected_nodes:
             self.connected_nodes.append(connected_node)
+            self.connected_edge_weights.append(connected_weight)
 
     def resetTraversalInformation(self):
         '''
@@ -52,6 +72,12 @@ class GraphNode():
         print(f"Node {self.number} is connected to nodes {self.connected_nodes}")
         if self.parent != None or self.discovered_time != None or self.finished_time != None:
             print(f"Parent: {self.parent} Discovered Time: {self.discovered_time} Finished Time: {self.finished_time}")
+
+    def printAbbreviated(self) :
+        print(f"(N:{self.number} PR:{self.distance} PA:{self.parent})", end=" ")
+
+    def getDescription(self):
+        return f"(N:{self.number} PR:{self.distance} PA:{self.parent})"
 
 class GraphEdgeWithWeight():
     '''
@@ -232,9 +258,9 @@ class Graph():
         '''
         edge_id = len(self.weighted_edges)
         self.weighted_edges.append(GraphEdgeWithWeight(start_node=start, end_node=end, weight=weight, edge_id=edge_id))
-        self.addUnweightedEdge(start=start,end=end)
+        self.addNeighborsToNodes(start=start,end=end,weight=weight)
 
-    def addUnweightedEdge(self, start, end):
+    def addNeighborsToNodes(self, start, end, weight):
         '''
         This method adds a connection between two nodes to the graph
 
@@ -245,9 +271,9 @@ class Graph():
                 The second node in the connection
         '''
 
-        self.nodes[start].addConnectedNode(end)
+        self.nodes[start].addConnectedNode(end,weight)
         if not self.is_directed:
-            self.nodes[end].addConnectedNode(start)
+            self.nodes[end].addConnectedNode(start,weight)
 
         if(self.is_debug):
             directed_or_undirected = "a directed" if self.is_directed else "an undirected"
@@ -530,7 +556,7 @@ class Graph():
 
         self.weighted_edges = sorted(self.weighted_edges, key=lambda edg_data: edg_data.weight)
 
-    def shortestPathUsingBellmanFord(self, start_node):
+    def shortestPathFromNodeUsingBellmanFord(self, start_node):
         '''
         This method calculates the shortest distance from a starting node to every other node using the bellman ford algorithm
 
@@ -585,12 +611,20 @@ class Graph():
         return distances_to_nodes, parents_for_nodes
     
     def getBellmanFordDirectedComparisonDataFrame(self, start_node):
+        '''
+        This algorithm creates a datafrom of the distance and parent to reach each node if the graph is directed or undirected
+
+        Parameters : 
+            start_node : int
+                The index of the node to start finding the path
+        '''
+
         print(f"\nThe shortest distance to each node using bellman ford from node {start_node}:")
         was_directed = self.is_directed
         self.is_directed = False
-        bellman_ford_distances, bellman_ford_parents = self.shortestPathUsingBellmanFord(start_node=start_node)
+        bellman_ford_distances, bellman_ford_parents = self.shortestPathFromNodeUsingBellmanFord(start_node=start_node)
         self.is_directed = True
-        bellman_ford_directed_distances, bellman_ford_directed_parents = self.shortestPathUsingBellmanFord(start_node=start_node)
+        bellman_ford_directed_distances, bellman_ford_directed_parents = self.shortestPathFromNodeUsingBellmanFord(start_node=start_node)
         self.is_directed = was_directed
 
         destination_nodes = []
@@ -607,6 +641,67 @@ class Graph():
         bellman_ford_dataframe = pd.DataFrame.from_dict(bellman_ford_dictionary)
         print(bellman_ford_dataframe)
         return bellman_ford_dataframe
+    
+    def shortestPathBetweenTwoNodesUsingDajkstra(self, start_node_index, end_node_index):
+        '''
+        This method finds the shortest path between a given start node and a given end node
+
+        Parameters :
+            start_node_index : int
+                The index of the start node for the route
+            end_node_index : int
+                The index of the end node for the route
+
+        Returns :
+            path : [int]
+                the path of nodes to reach the end node
+            distance : int
+                The distance of the path to the end node
+        '''
+
+        priority_queue = MinHeapForObjects.MinHeapForObjects()
+        start_node = self.nodes[start_node_index]
+        end_node = self.nodes[end_node_index]
+
+
+        start_node.distance = 0
+        
+        priority_queue.addItem(start_node)
+        start_node.is_in_queue = True
+
+        while not priority_queue.isEmpty() :
+            current_node = priority_queue.deleteItem(0)
+            current_node.is_visted = True
+            current_node.in_in_queue = False
+
+            if current_node.number == end_node.number :
+                end_node = current_node
+                break
+
+            neighbors = current_node.connected_nodes
+            neighbor_weights = current_node.connected_edge_weights
+
+            for i in range(0,len(neighbors)):
+                neighbor_node = self.nodes[neighbors[i]]
+                edge_weight = neighbor_weights[i]
+
+                if neighbor_node.is_visited == False and ( (neighbor_node.distance != None and neighbor_node.distance > current_node.distance + edge_weight) or neighbor_node.distance == None ):
+                    # print(f"({neighbor_vertex.x},{neighbor_vertex.y}) -> Dist = {current_vertex.d + edge_weight} and Parent = ({current_vertex.x},{current_vertex.y})")
+                    neighbor_node.distance = current_node.distance + edge_weight
+                    neighbor_node.parent = current_node.number
+                    if not neighbor_node.is_in_queue :
+                        priority_queue.addItem(neighbor_node)
+                    else :
+                        priority_queue.updateItemPriority(neighbor_node)
+
+        path = []
+        parent = end_node.number
+        while parent != None :
+            path.insert(0, parent)
+            parent_node = self.nodes[parent]
+            parent = parent_node.parent
+
+        return path, end_node.distance
 
 if __name__ == '__main__':
 
@@ -668,7 +763,7 @@ if __name__ == '__main__':
 
     weighted_directed_graph = Graph(7,edge_tuples=weighted_edge_list,is_directed=True,is_weighted=True)
     
-    print("\Weight Graph Shortest path")
+    print("\nWeighted Graph Shortest path")
 
     weighted_graph.getBellmanFordDirectedComparisonDataFrame(0)
 
@@ -678,3 +773,11 @@ if __name__ == '__main__':
     unweighted_edge_list = [(0,1),(1,2),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5)]   
     unweighted_graph = Graph(7,edge_tuples=edge_list, is_weighted=False, is_debug=False)
     unweighted_graph.getBellmanFordDirectedComparisonDataFrame(3)
+
+    path, distance = weighted_graph.shortestPathBetweenTwoNodesUsingDajkstra(0,5)
+    print(path)
+    print(distance)
+
+    path, distance = unweighted_graph.shortestPathBetweenTwoNodesUsingDajkstra(0,5)
+    print(path)
+    print(distance)
