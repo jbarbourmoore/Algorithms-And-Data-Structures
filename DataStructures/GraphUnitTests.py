@@ -15,6 +15,8 @@ class GraphUnitTests(unittest.TestCase):
         '''
 
         self.edge_list = [(0,1),(2,1),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5),(7,8),(9,8),(9,7)]   
+        self.weighted_edge_list = [(0,1,2),(2,1,1),(2,3,4),(3,4,6),(4,5,3),(5,6,2),(1,6,1),(6,3,3),(2,4,4),(2,5,2),(7,8,5),(9,8,2),(9,7,1)]   
+
         self.number_of_nodes = 10
 
     def test_undirected_first_node_travel_breadth(self):
@@ -22,7 +24,7 @@ class GraphUnitTests(unittest.TestCase):
         This method tests undirected breadth first travel from the first node
         '''
 
-        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, is_breadth_first=True, is_directed=False, is_debug=False)
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.edge_list, is_breadth_first=True, is_directed=False, is_debug=False)
         
         self.assertEqual(len(graph.getUnvisitedNodes()),10)
 
@@ -43,7 +45,7 @@ class GraphUnitTests(unittest.TestCase):
         This method tests directed breadth first travel from the first node
         '''
 
-        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, is_breadth_first=True, is_directed=True, is_debug=False)
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.edge_list, is_breadth_first=True, is_directed=True, is_debug=False)
         
         self.assertEqual(len(graph.getUnvisitedNodes()),10)
 
@@ -64,7 +66,7 @@ class GraphUnitTests(unittest.TestCase):
         This method tests directed breadth first travel from the first node
         '''
 
-        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, is_breadth_first=False, is_directed=False, is_debug=False)
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.edge_list, is_breadth_first=False, is_directed=False, is_debug=False)
         
         self.assertEqual(len(graph.getUnvisitedNodes()),10)
 
@@ -84,7 +86,7 @@ class GraphUnitTests(unittest.TestCase):
         This method tests directed depth first travel from the first node
         '''
 
-        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, is_breadth_first=False, is_directed=True, is_debug=False)
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.edge_list, is_breadth_first=False, is_directed=True, is_debug=False)
         
         self.assertEqual(len(graph.getUnvisitedNodes()),10)
 
@@ -104,7 +106,7 @@ class GraphUnitTests(unittest.TestCase):
         This method tests directed depth first travered
         '''
 
-        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, is_breadth_first=False, is_directed=True, is_debug=False)
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.edge_list, is_breadth_first=False, is_directed=True, is_debug=False)
         
         self.assertEqual(len(graph.getUnvisitedNodes()),10)
 
@@ -123,7 +125,7 @@ class GraphUnitTests(unittest.TestCase):
         This method tests undirected depth first travered
         '''
 
-        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, is_breadth_first=False, is_directed=False, is_debug=False)
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.edge_list, is_breadth_first=False, is_directed=False, is_debug=False)
         
         self.assertEqual(len(graph.getUnvisitedNodes()),10)
 
@@ -142,7 +144,7 @@ class GraphUnitTests(unittest.TestCase):
         This method tests undirected breadth first travered
         '''
 
-        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, is_breadth_first=True, is_directed=False, is_debug=False)
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.edge_list, is_breadth_first=True, is_directed=False, is_debug=False)
         
         self.assertEqual(len(graph.getUnvisitedNodes()),10)
 
@@ -161,7 +163,7 @@ class GraphUnitTests(unittest.TestCase):
         This method tests directed breadth first travered
         '''
 
-        graph = Graph(number_of_nodes=self.number_of_nodes, edge_list=self.edge_list, is_breadth_first=True, is_directed=True, is_debug=False)
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.edge_list, is_breadth_first=True, is_directed=True, is_debug=False)
         
         self.assertEqual(len(graph.getUnvisitedNodes()),10)
 
@@ -174,6 +176,50 @@ class GraphUnitTests(unittest.TestCase):
         self.assertEqual(len(unvisited_nodes),0)
         self.assertEqual(graph.getNodeDiscoveredTime(6),2)
         self.assertEqual(graph.getIndependantSegmentCount(),4)
+
+    def test_unweighted_directed_bellman(self):
+        '''
+        This method tests bellman using an unweighted, directed graph
+        '''
+
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.edge_list, is_breadth_first=True, is_directed=True, is_debug=False)
+        
+        distances = graph.shortestPathUsingBellmanFord(0)
+
+        self.assertListEqual(distances, [0, 1, None, 3, 4, 5, 2, None, None, None])
+
+    def test_unweighted_undirected_bellman(self):
+        '''
+        This method tests bellman using an unweighted, undirected graph
+        '''
+
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.edge_list, is_breadth_first=True, is_directed=False, is_debug=False)
+        
+        distances = graph.shortestPathUsingBellmanFord(0)
+
+        self.assertListEqual(distances, [0, 1, 2, 3, 3, 3, 2, None, None, None])
+
+    def test_weighted_directed_bellman(self):
+        '''
+        This method tests bellman using a weighted, directed graph
+        '''
+
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.weighted_edge_list, is_breadth_first=True, is_directed=True, is_weighted=True, is_debug=False)
+        
+        distances = graph.shortestPathUsingBellmanFord(0)
+
+        self.assertListEqual(distances, [0, 2, None, 6, 12, 15, 3, None, None, None])
+
+    def test_weighted_undirected_bellman(self):
+        '''
+        This method tests bellman using a weighted, undirected graph
+        '''
+
+        graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.weighted_edge_list, is_breadth_first=True, is_directed=False, is_weighted=True, is_debug=False)
+        
+        distances = graph.shortestPathUsingBellmanFord(0)
+
+        self.assertListEqual(distances, [0, 2, 3, 6, 7, 5, 3, None, None, None])
 
 
 if __name__ == '__main__':
