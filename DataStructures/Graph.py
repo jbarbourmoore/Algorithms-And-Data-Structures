@@ -36,7 +36,7 @@ class GraphNode():
         self.is_visited = False
         self.is_in_queue = False
 
-    def resetTrackersForDajkstra(self):
+    def resetTrackersForDijkstra(self):
         '''
         This method resets the trackers for djakstra's algoithm so it may be ran again
         '''
@@ -652,7 +652,7 @@ class Graph():
         print(bellman_ford_dataframe)
         return bellman_ford_dataframe
     
-    def shortestPathBetweenTwoNodesUsingDajkstra(self, start_node_index, end_node_index):
+    def shortestPathBetweenTwoNodesUsingDijkstra(self, start_node_index, end_node_index):
         '''
         This method finds the shortest path between a given start node and a given end node
 
@@ -718,15 +718,15 @@ class Graph():
         # print(f"Calculating from {start_node_index} to {end_node_index} distance is {end_node.distance}")
         return path, end_node.distance
     
-    def resetAllNodesTrackersForDajkstra(self):
+    def resetAllNodesTrackersForDijkstra(self):
         '''
         This method resets the trackers used for djakstra's algorithm for all nodes in the graph
         '''
 
         for i in range(0, self.number_of_nodes):
-            self.nodes[i].resetTrackersForDajkstra()
+            self.nodes[i].resetTrackersForDijkstra()
 
-    def findAllPathsDajkstra(self):
+    def findAllPathsDijkstra(self):
         distances_dictionary = {}
         paths_dictionary = {}
 
@@ -736,9 +736,9 @@ class Graph():
             paths_list = []
 
             for end_index in range(0, self.number_of_nodes):
-                self.resetAllNodesTrackersForDajkstra()
+                self.resetAllNodesTrackersForDijkstra()
 
-                path, distance = self.shortestPathBetweenTwoNodesUsingDajkstra(start_node_index=start_index,end_node_index=end_index)
+                path, distance = self.shortestPathBetweenTwoNodesUsingDijkstra(start_node_index=start_index,end_node_index=end_index)
                 distances_list.append(distance)
                 paths_list.append(path)
 
@@ -832,49 +832,49 @@ if __name__ == '__main__':
     unweighted_graph = Graph(7,edge_tuples=edge_list, is_weighted=False, is_debug=False)
     unweighted_graph.getBellmanFordDirectedComparisonDataFrame(3)
 
-    print("\n Shortest path and distance between 0 and 5 in a weighted graph using Dajkstra's Algorithm")
-    path, distance = weighted_graph.shortestPathBetweenTwoNodesUsingDajkstra(0,5)
+    print("\n Shortest path and distance between 0 and 5 in a weighted graph using Dijkstra's Algorithm")
+    path, distance = weighted_graph.shortestPathBetweenTwoNodesUsingDijkstra(0,5)
     print(path)
     print(distance)
 
-    print("\n Shortest path and distance between 0 and 5 in an unweighted graph using Dajkstra's Algorithm")
-    path, distance = unweighted_graph.shortestPathBetweenTwoNodesUsingDajkstra(0,5)
+    print("\n Shortest path and distance between 0 and 5 in an unweighted graph using Dijkstra's Algorithm")
+    path, distance = unweighted_graph.shortestPathBetweenTwoNodesUsingDijkstra(0,5)
     print(path)
     print(distance)
-    edges_dajkstra = [(0,1),(2,1),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5),(7,8),(9,8),(9,7)]   
-    weighted_edges_dajkstra = [(0,1,2),(2,1,1),(2,3,4),(3,4,6),(4,5,3),(5,6,2),(1,6,10),(6,3,3),(2,4,4),(2,5,2),(7,8,5),(9,8,2),(9,7,1)]
+    edges_Dijkstra = [(0,1),(2,1),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5),(7,8),(9,8),(9,7)]   
+    weighted_edges_Dijkstra = [(0,1,2),(2,1,1),(2,3,4),(3,4,6),(4,5,3),(5,6,2),(1,6,10),(6,3,3),(2,4,4),(2,5,2),(7,8,5),(9,8,2),(9,7,1)]
 
-    unweighted_undirected_dajkstra_graph = Graph(10,edge_tuples=edges_dajkstra, is_weighted=False, is_directed=False, is_debug=False)
-    unweighted_directed_dajkstra_graph = Graph(10,edge_tuples=edges_dajkstra, is_weighted=False, is_directed=True, is_debug=False)
-    weighted_undirected_dajkstra_graph = Graph(10,edge_tuples=weighted_edges_dajkstra, is_weighted=True, is_directed=False, is_debug=False)
-    weighted_directed_dajkstra_graph = Graph(10,edge_tuples=weighted_edges_dajkstra, is_weighted=True, is_directed=True, is_debug=False)
+    unweighted_undirected_Dijkstra_graph = Graph(10,edge_tuples=edges_Dijkstra, is_weighted=False, is_directed=False, is_debug=False)
+    unweighted_directed_Dijkstra_graph = Graph(10,edge_tuples=edges_Dijkstra, is_weighted=False, is_directed=True, is_debug=False)
+    weighted_undirected_Dijkstra_graph = Graph(10,edge_tuples=weighted_edges_Dijkstra, is_weighted=True, is_directed=False, is_debug=False)
+    weighted_directed_Dijkstra_graph = Graph(10,edge_tuples=weighted_edges_Dijkstra, is_weighted=True, is_directed=True, is_debug=False)
 
     print("\n\n Given a graph with 10 nodes numbered 0-9 and the following 13 edges where s is the index of the start node, e is the index of the end node and w is the edge weight if the graph is weighted.")
-    weighted_directed_dajkstra_graph.printWeightEdgesAbbreviated()
-    print("\n Shortest distance between all nodes in an unweighted, undirected graph using Dajkstra's Algorithm")
-    unweighted_undirected_distances, unweighted_undirected_paths = unweighted_undirected_dajkstra_graph.findAllPathsDajkstra()
+    weighted_directed_Dijkstra_graph.printWeightEdgesAbbreviated()
+    print("\n Shortest distance between all nodes in an unweighted, undirected graph using Dijkstra's Algorithm")
+    unweighted_undirected_distances, unweighted_undirected_paths = unweighted_undirected_Dijkstra_graph.findAllPathsDijkstra()
     print(unweighted_undirected_distances)
 
-    print("\n Shortest distance between all nodes in an unweighted, directed graph using Dajkstra's Algorithm")
-    unweighted_directed_distances, unweighted_directed_paths = unweighted_directed_dajkstra_graph.findAllPathsDajkstra()
+    print("\n Shortest distance between all nodes in an unweighted, directed graph using Dijkstra's Algorithm")
+    unweighted_directed_distances, unweighted_directed_paths = unweighted_directed_Dijkstra_graph.findAllPathsDijkstra()
     print(unweighted_directed_distances)
 
-    print("\n Shortest distance between all nodes in a weighted, undirected graph using Dajkstra's Algorithm")
-    weighted_distances, weighted_paths = weighted_undirected_dajkstra_graph.findAllPathsDajkstra()
+    print("\n Shortest distance between all nodes in a weighted, undirected graph using Dijkstra's Algorithm")
+    weighted_distances, weighted_paths = weighted_undirected_Dijkstra_graph.findAllPathsDijkstra()
     print(weighted_distances)
 
-    print("\n Shortest distance between all nodes in a weighted, directed graph using Dajkstra's Algorithm")
-    weighted_directed_distances, weighted_directed_paths = weighted_directed_dajkstra_graph.findAllPathsDajkstra()
+    print("\n Shortest distance between all nodes in a weighted, directed graph using Dijkstra's Algorithm")
+    weighted_directed_distances, weighted_directed_paths = weighted_directed_Dijkstra_graph.findAllPathsDijkstra()
     print(weighted_directed_distances)
     
     print("\n\n Given a graph with 7 nodes numbered 0-6 and the following 9 edges where s is the index of the start node, e is the index of the end node and w is the edge weight if the graph is weighted.")
-    weighted_directed_dajkstra_graph.printWeightEdgesAbbreviated()
-    print("\n Shortest path between all nodes in an unweighted, undirected graph using Dajkstra's Algorithm")
+    weighted_directed_Dijkstra_graph.printWeightEdgesAbbreviated()
+    print("\n Shortest path between all nodes in an unweighted, undirected graph using Dijkstra's Algorithm")
     print(unweighted_undirected_paths)  
-    print("\n Shortest path between all nodes in an unweighted, directed graph using Dajkstra's Algorithm")  
+    print("\n Shortest path between all nodes in an unweighted, directed graph using Dijkstra's Algorithm")  
     print(unweighted_directed_paths)
-    print("\n Shortest path between all nodes in a weighted, undirected graph using Dajkstra's Algorithm")
+    print("\n Shortest path between all nodes in a weighted, undirected graph using Dijkstra's Algorithm")
     print(weighted_paths)
-    print("\n Shortest path between all nodes in a weighted, directed graph using Dajkstra's Algorithm")
+    print("\n Shortest path between all nodes in a weighted, directed graph using Dijkstra's Algorithm")
     print(weighted_directed_paths)
     print("\n\n")

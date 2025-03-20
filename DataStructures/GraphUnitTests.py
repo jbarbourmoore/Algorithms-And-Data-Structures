@@ -237,45 +237,45 @@ class GraphUnitTests(unittest.TestCase):
         self.assertEqual(parents, None)
         self.assertEqual(distances, None)
 
-    def test_unweighted_directed_Dajkstra(self):
+    def test_unweighted_directed_Dijkstra(self):
         '''
-        This method tests dajkstra using an unweighted, directed graph
+        This method tests Dijkstra using an unweighted, directed graph
         '''
 
         graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.edge_list, is_breadth_first=True, is_directed=True, is_debug=False)
         
-        distances, paths = graph.findAllPathsDajkstra()
+        distances, paths = graph.findAllPathsDijkstra()
         print(paths)
 
 
-    def test_unweighted_undirected_dajkstra(self):
+    def test_unweighted_undirected_Dijkstra(self):
         '''
-        This method tests dajkstra using an unweighted, undirected graph
+        This method tests Dijkstra using an unweighted, undirected graph
         '''
 
         graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.edge_list, is_breadth_first=True, is_directed=False, is_debug=False)
         
-        distances, paths = graph.findAllPathsDajkstra()
+        distances, paths = graph.findAllPathsDijkstra()
         print(paths)
 
-    def test_weighted_directed_dajkstra(self):
+    def test_weighted_directed_Dijkstra(self):
         '''
-        This method tests dajkstra using a weighted, directed graph
+        This method tests Dijkstra using a weighted, directed graph
         '''
 
         graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.weighted_edge_list, is_breadth_first=True, is_directed=True, is_weighted=True, is_debug=False)
         
-        distances, paths = graph.findAllPathsDajkstra()
+        distances, paths = graph.findAllPathsDijkstra()
         print(paths)
 
-    def test_weighted_dajkstra_bellman(self):
+    def test_weighted_Dijkstra_bellman(self):
         '''
-        This method tests dajkstra using a weighted, undirected graph
+        This method tests Dijkstra using a weighted, undirected graph
         '''
 
         graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.weighted_edge_list, is_breadth_first=True, is_directed=False, is_weighted=True, is_debug=False)
         
-        distances, paths = graph.findAllPathsDajkstra()
+        distances, paths = graph.findAllPathsDijkstra()
         print(paths)
 
 if __name__ == '__main__':
