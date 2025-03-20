@@ -498,16 +498,71 @@ class Graph():
             print("in depth first traversal mode.")
 
     def printWeightedEdges(self):
+        '''
+        This method prints the weighted edges
+
+        It relies on the edges being weighted
+        '''
+
+        assert self.is_weighted
         for weighted_edge in self.weighted_edges:
             weighted_edge.printEdge()
         
     def printWeightEdgesAbbreviated(self):
+        '''
+        This method prints the weighted edges in an abbreviated form
+
+        It relies on the edges being weighted
+        '''
+
+        assert self.is_weighted
         for weighted_edge in self.weighted_edges:
             weighted_edge.printEdgeAbbreviated()
         print()
 
     def sortWeightedEdges(self):
+        '''
+        This method sorts the weighted edges in ascending order by weight
+
+        It relies on the edges being weighted
+        '''
+
+        assert self.is_weighted
         self.weighted_edges = sorted(self.weighted_edges, key=lambda edg_data: edg_data.weight)
+
+    def shortestPathUsingBellmanFord(self, start_node):
+        '''
+        This method calculates the shortest distance from a starting node to every other node using the bellman ford algorithm
+
+        It relies on the graph being weighted
+
+        Parameters :
+            start_node : int
+                The node that each node's distance is being calculated from
+        
+        Returns :
+            distances_to_nodes : [int]
+                The list of the distance from the starting node to every other node
+        '''
+
+        assert self.is_weighted
+
+        distances_to_nodes = []
+        for _ in range(0,self.number_of_nodes):
+            distances_to_nodes.append(None)
+
+        distances_to_nodes[start_node] = 0
+
+        for i in range(0,self.number_of_nodes):
+            for edge in self.weighted_edges:
+                start_node, end_node, weight = edge.getStartEndWeight()
+                if distances_to_nodes[start_node] != None and ( (distances_to_nodes[end_node]!= None and distances_to_nodes[start_node] + weight < distances_to_nodes[end_node]) or distances_to_nodes[end_node] == None) :
+                    distances_to_nodes[end_node] = distances_to_nodes[start_node] + weight
+                if not self.is_directed :
+                    if distances_to_nodes[end_node] != None and ( (distances_to_nodes[start_node]!= None and distances_to_nodes[end_node] + weight < distances_to_nodes[start_node]) or distances_to_nodes[start_node] == None) :
+                        distances_to_nodes[start_node] = distances_to_nodes[end_node] + weight
+    
+        return distances_to_nodes
 
 if __name__ == '__main__':
 
@@ -564,11 +619,33 @@ if __name__ == '__main__':
     weighted_graph = Graph(7,edge_list=weighted_edge_list,is_directed=False,is_weighted=True)
     weighted_graph_table = weighted_graph.traverseGraph()
 
-    print("The table of the weighted graph traversal data:")
+    print("\nThe table of the undirected weighted graph traversal data:")
     print(weighted_graph_table)
 
-    print("The weighted edges prior to sorting by weight:")
-    weighted_graph.printWeightEdgesAbbreviated()
-    weighted_graph.sortWeightedEdges()
-    print("The weighted edges sorted by weight:")
-    weighted_graph.printWeightEdgesAbbreviated()
+    weighted_directed_graph = Graph(7,edge_list=weighted_edge_list,is_directed=True,is_weighted=True)
+
+    print("\nThe shortest distance to each node using bellman ford from node 0:")
+
+    bellman_ford_distances = weighted_graph.shortestPathUsingBellmanFord(0)
+    bellman_ford_directed_distances = weighted_directed_graph.shortestPathUsingBellmanFord(0)
+
+    bellman_ford_dictionary = {
+        "Destination Node": [0,1,2,3,4,5,6],
+        "Undirected Distance":bellman_ford_distances,
+        "Directed Distance": bellman_ford_directed_distances
+    }
+    bellman_ford_dataframe = pd.DataFrame.from_dict(bellman_ford_dictionary)
+    print(bellman_ford_dataframe)
+
+    print("\nThe shortest distance to each node using bellman ford from node 3:")
+
+    bellman_ford_distances = weighted_graph.shortestPathUsingBellmanFord(3)
+    bellman_ford_directed_distances = weighted_directed_graph.shortestPathUsingBellmanFord(3)
+
+    bellman_ford_dictionary = {
+        "Destination Node": [0,1,2,3,4,5,6],
+        "Undirected Distance":bellman_ford_distances,
+        "Directed Distance": bellman_ford_directed_distances
+    }
+    bellman_ford_dataframe = pd.DataFrame.from_dict(bellman_ford_dictionary)
+    print(bellman_ford_dataframe)
