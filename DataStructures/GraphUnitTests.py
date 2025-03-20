@@ -184,8 +184,9 @@ class GraphUnitTests(unittest.TestCase):
 
         graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.edge_list, is_breadth_first=True, is_directed=True, is_debug=False)
         
-        distances = graph.shortestPathUsingBellmanFord(0)
+        distances, parents = graph.shortestPathUsingBellmanFord(0)
 
+        self.assertListEqual(parents, [None, 0, None, 6, 3, 4, 1, None, None, None])
         self.assertListEqual(distances, [0, 1, None, 3, 4, 5, 2, None, None, None])
 
     def test_unweighted_undirected_bellman(self):
@@ -195,8 +196,9 @@ class GraphUnitTests(unittest.TestCase):
 
         graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.edge_list, is_breadth_first=True, is_directed=False, is_debug=False)
         
-        distances = graph.shortestPathUsingBellmanFord(0)
+        distances, parents = graph.shortestPathUsingBellmanFord(0)
 
+        self.assertListEqual(parents, [None, 0, 1, 2, 2, 2, 1, None, None, None])
         self.assertListEqual(distances, [0, 1, 2, 3, 3, 3, 2, None, None, None])
 
     def test_weighted_directed_bellman(self):
@@ -206,8 +208,9 @@ class GraphUnitTests(unittest.TestCase):
 
         graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.weighted_edge_list, is_breadth_first=True, is_directed=True, is_weighted=True, is_debug=False)
         
-        distances = graph.shortestPathUsingBellmanFord(0)
+        distances, parents = graph.shortestPathUsingBellmanFord(0)
 
+        self.assertListEqual(parents, [None, 0, None, 6, 3, 4, 1, None, None, None])
         self.assertListEqual(distances, [0, 2, None, 6, 12, 15, 3, None, None, None])
 
     def test_weighted_undirected_bellman(self):
@@ -217,10 +220,22 @@ class GraphUnitTests(unittest.TestCase):
 
         graph = Graph(number_of_nodes=self.number_of_nodes, edge_tuples=self.weighted_edge_list, is_breadth_first=True, is_directed=False, is_weighted=True, is_debug=False)
         
-        distances = graph.shortestPathUsingBellmanFord(0)
+        distances, parents = graph.shortestPathUsingBellmanFord(0)
 
+        self.assertListEqual(parents, [None, 0, 1, 6, 2, 2, 1, None, None, None])
         self.assertListEqual(distances, [0, 2, 3, 6, 7, 5, 3, None, None, None])
 
+    def test_weighted_undirected_bellman_negative_edge(self):
+        '''
+        This method tests bellman using a weighted, undirected graph with a negative loop
+        '''
+        negative_edge_loop_edges = [(0,1,1),(1,2,-1),(0,2,1)]
+        graph = Graph(number_of_nodes=3, edge_tuples=negative_edge_loop_edges, is_breadth_first=True, is_directed=False, is_weighted=True, is_debug=False)
+        
+        distances, parents = graph.shortestPathUsingBellmanFord(0)
+
+        self.assertEqual(parents, None)
+        self.assertEqual(distances, None)
 
 if __name__ == '__main__':
     unittest.main()

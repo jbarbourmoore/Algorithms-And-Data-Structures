@@ -534,20 +534,26 @@ class Graph():
         '''
         This method calculates the shortest distance from a starting node to every other node using the bellman ford algorithm
 
-        It relies on the graph being weighted
+        It relies on the graph being weighted (defaults unweighted weights to 1)
+        If there is a negative edge loop the method returns none instead of both arrays
 
         Parameters :
             start_node : int
                 The node that each node's distance is being calculated from
         
         Returns :
-            distances_to_nodes : [int]
+            distances_to_nodes : [int] (or None if there is a negative edge loop)
                 The list of the distance from the starting node to every other node
+            parents_to_nodes : [int] (or None if there is a negative edge loop)
+                The list of the parent node for the route from the starting node to every other node
         '''
 
         distances_to_nodes = []
+        parents_for_nodes = []
         for _ in range(0,self.number_of_nodes):
             distances_to_nodes.append(None)
+            parents_for_nodes.append(None)
+            
 
         distances_to_nodes[start_node] = 0
 
@@ -555,27 +561,48 @@ class Graph():
             for j in range(0,len(self.weighted_edges)):
                 edge = self.weighted_edges[j]
                 start_node, end_node, edge_weight = edge.getStartEndWeight()
+
+                # relax along the edge from start to end
                 if distances_to_nodes[start_node] != None and ( (distances_to_nodes[end_node]!= None and distances_to_nodes[start_node] + edge_weight < distances_to_nodes[end_node]) or distances_to_nodes[end_node] == None) :
                     distances_to_nodes[end_node] = distances_to_nodes[start_node] + edge_weight
+                    parents_for_nodes[end_node] = start_node
+
+                    # returns None if there is a negative edge loop
+                    if i == self.number_of_nodes - 1:
+                        return None, None
+                
+                # if the graph does not have edge directions
+                # also relax along the edge from end to start
                 if not self.is_directed :
                     if distances_to_nodes[end_node] != None and ( (distances_to_nodes[start_node]!= None and distances_to_nodes[end_node] + edge_weight < distances_to_nodes[start_node]) or distances_to_nodes[start_node] == None) :
                         distances_to_nodes[start_node] = distances_to_nodes[end_node] + edge_weight
+                        parents_for_nodes[start_node] = end_node
+
+                        # returns None if there is a negative edge loop
+                        if i == self.number_of_nodes - 1:
+                            return None, None
     
-        return distances_to_nodes
+        return distances_to_nodes, parents_for_nodes
     
     def getBellmanFordDirectedComparisonDataFrame(self, start_node):
         print(f"\nThe shortest distance to each node using bellman ford from node {start_node}:")
         was_directed = self.is_directed
         self.is_directed = False
-        bellman_ford_distances = self.shortestPathUsingBellmanFord(start_node=start_node)
+        bellman_ford_distances, bellman_ford_parents = self.shortestPathUsingBellmanFord(start_node=start_node)
         self.is_directed = True
-        bellman_ford_directed_distances = self.shortestPathUsingBellmanFord(start_node=start_node)
+        bellman_ford_directed_distances, bellman_ford_directed_parents = self.shortestPathUsingBellmanFord(start_node=start_node)
         self.is_directed = was_directed
 
+        destination_nodes = []
+        for i in range(0,self.number_of_nodes):
+            destination_nodes.append(i)
+
         bellman_ford_dictionary = {
-            "Destination Node": [0,1,2,3,4,5,6],
+            "Destination Node": destination_nodes,
             "Undirected Distance":bellman_ford_distances,
-            "Directed Distance": bellman_ford_directed_distances
+            "Undirected Parents": bellman_ford_parents,
+            "Directed Distance": bellman_ford_directed_distances,
+            "Directed Parents":bellman_ford_directed_parents
         }
         bellman_ford_dataframe = pd.DataFrame.from_dict(bellman_ford_dictionary)
         print(bellman_ford_dataframe)
