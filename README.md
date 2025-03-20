@@ -116,14 +116,27 @@ The binary search tree itself does not store much information. It holds one bina
 
 The graph data structure is defined using nodes and edges with multiple Boolean parameters to allow each graph object to be constructed for a specific purpose or algorithm. (Definitely not an efficient implementation of a graph, simply interesting to play with in this case)   
 
+#### Directed or Undirected Edges    
+
+The is_directed Boolean determines whether the edges in a graph strictly travel from the start node to the end node or if they are reversable.   
+
 #### Breadth or Depth First Traversal   
 
 The is_breadth Boolean determines whether the traversal methods will run breadth first (visiting each descendant of a node before visiting the descendants' descendants) or depth first (visiting the first descendant of the node and each first descendant of that node until there are no further descendants before visiting the other descendants of the node and repeating)    
 
+![Tables comparing the traversal results with directed or undirected edges and using breadth first traversal or depth first traversal. Directed edges cause the graph to not be a single connected entity and breadth first increases the number of nodes who have 0-2 as their parent.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/48fe4e511fcf3d83faa1bc48ddd7ff56d7dbc8ce/OutputImages/Graph_TraversalComparisons.png "Graph Traversal Comparisons")
+
 #### Weighted or Unweighted Edges    
 
-The is_weighted Boolean determines whether the edges in a graph are weighted. This weight data is used when calculating the shortest distance to each node and similar algorithms. Unweighted graphs default to each edge weighted 1 for the sake of the calculations.   
- 
-#### Directed or Undirected Edges    
+The is_weighted Boolean determines whether the edges in a graph are weighted. This weight data is used when calculating the shortest distance to each node and similar algorithms. Unweighted graphs default to each edge weighted 1 for the sake of the calculations.  
 
-The is_directed Boolean determines whether the edges in a graph strictly travel from the start node to the end node or if they are reversable.   
+#### Dijkstra's Algorithm for Shortest Paths
+
+The graph can use Dijkstra's Algorithm to find the shortest path between each of it's nodes depending on whether the graph is directed or un directed and whether the graph is weighted or unweighted. Unweighted graphs assume each edge has the same cost (default to one: so if a path takes 4 edges that would be a distance of four).   
+
+Below are some graphics showing the shortest distances and shortest paths between each node in a given graph with that are weighted or unweighted and directed or undirected. Each column is labeled with the starting node index for a path and each row labeled with the ending node index for a path. Every location where the row and column are the same the distance should be 0 and the path should simply be that node. If there is no path between two nodes the distance should be indicated by NaN and the path by None.  
+
+![Tables comparing the shortest distances between each node in the graph when it is weighted or unweighted and directed or undirected. Weighted causes many of the distances to increase and as does directed. Directed also decreases the number of nodes are accessible from which other nodes](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/48fe4e511fcf3d83faa1bc48ddd7ff56d7dbc8ce/OutputImages/Graph_ShortestDistancesComparisons.png "Shortest Distances Comparisons")
+
+![Tables comparing the shortest paths between each node in the graph when it is weighted or unweighted and directed or undirected. Weighted causes some of the paths to reroute to avoid particularly heavy or expensive routes. Directed  decreases the number of nodes are accessible from which other nodes, thereby changing the routing options.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/48fe4e511fcf3d83faa1bc48ddd7ff56d7dbc8ce/OutputImages/Graph_ShortestPathsComparisons.png "Shortest Paths Comparisons")
+
