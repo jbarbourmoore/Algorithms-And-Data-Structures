@@ -154,8 +154,75 @@ def probabilityTwoIndependantEventsOccur(a_successful_outcomes, b_successful_out
 
     return a_probability * b_probability
 
+def permutationsWithRepetition(number_of_options, count_choices_made):
+    '''
+    This function calculates the number of possibilities for a ordered selection that allows repetition
+
+    total_possibilities = number_of_options ** count_choices_made
+
+    An example would be calculating the total number of possible 4 digit [0-9] pins 
+
+    Parameters :
+        number_of_options : int
+            The number of options that each selection is choosing between (such as 10 digit options [0-9] for a pin)
+        count_choices_made : int 
+            The number of times a choice is made (such as selecting 4 digits for a pin)
+
+    Returns : 
+        total_possibilities : int
+            The total number of possibilities for an ordered selection that allows repetition
+    '''
+
+    return number_of_options ** count_choices_made
+
+def permutationWithoutRepetition(number_of_options, count_choices_made):
+    '''
+    This function calculates the number of possibilities for an ordered selection that does not allow repetition
+
+    total_possibilities = number_of_options! / (number_of_options - count_choices_made)!
+
+    An example would be finding th number of orders 3 out of 16 billiards balls may go into the nets -> 16!/(16-3)! -> 16!/13! -> 3360
+
+    Parameters :
+        number_of_options : int
+            The number of options that each selection is choosing between (such as 16 billiards balls)
+        count_choices_made : int 
+            The number of times a choice is made (such as 3 of them going into the net)
+
+    Returns : 
+        total_possibilities : int
+            The total number of possibilities for an ordered selection that does not allow repetition
+    '''
+
+    total_possibilities = factorialByPrimeFactors(number_of_options) / factorialByPrimeFactors(number_of_options - count_choices_made)
+    return total_possibilities
+
+def combinationsWithoutRepetition(number_of_options, count_choices_made):
+    '''
+    This function calculates the number of possibilities for an unordered selection that does not allow repetition
+
+    total_possibilities = number_of_options! / (count_choices_made! * (number_of_options - count_choices_made)!)
+
+    An example would be finding the number of combos that can be made with 3 out of 16 billiards balls-> 16!/(3!(16-3)!) -> 16!/(3!*13!) -> 560
+
+    Parameters :
+        number_of_options : int
+            The number of options that each selection is choosing between (such as 16 billiards balls)
+        count_choices_made : int 
+            The number of times a choice is made (such as 3 of them going into the net)
+
+    Returns : 
+        total_possibilities : int
+            The total number of possibilities for an ordered selection that does not allow repetition
+    '''
+    total_possibilities = factorialByPrimeFactors(number_of_options) / (factorialByPrimeFactors(count_choices_made)*factorialByPrimeFactors(number_of_options - count_choices_made))
+    return total_possibilities
+
 number = 12
 print(f"{number}! is loop:{factorialByLoop(number)}, recursion:{factorialByRecursion(number)}, and prime_factors:{factorialByPrimeFactors(number)} which are hopefully the same")
 
 print(f"The probability of rolling a 3  on a six sided dice is {probabilityOfASingleEvent(1,total_outcomes=6):.3f}")
 print(f"The probability of rolling a 3 and then a 5 on a six sided dice is {probabilityTwoIndependantEventsOccur(1,1,total_outcomes=6):.3f}")
+print(f"The total number of possible 4 digit [0-9] pins is {permutationsWithRepetition(10,4)}")
+print(f"The total number of possible orders that 4 of 16 billiards balls may go into a basket is {permutationWithoutRepetition(16,4)}")
+print(f"The total number of possible combinations that can be made with 4 of 16 billiards balls is {combinationsWithoutRepetition(16,4)}")
