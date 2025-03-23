@@ -106,10 +106,10 @@ class UsingPolynomialMultiplication_FFT_UnitTests(unittest.TestCase):
         self.assertGreater(duration_check,duration_check_fft)
 
     def test_increasing_size_arrays_durations(self):
-        starting_size = 4
-        increase_factor = 2
-        attempts_per_count = 4
-        size_increases = 9
+        starting_size = 50
+        increase_quantity = 50
+        attempts_per_count = 10
+        size_increases = 19
 
         set_sizes = []
         brute_force_durations = []
@@ -126,7 +126,7 @@ class UsingPolynomialMultiplication_FFT_UnitTests(unittest.TestCase):
                 includes = True
 
             for i in range(0,size_increases):
-                set_size = starting_size*increase_factor**i
+                set_size = starting_size+increase_quantity*i
 
                 for _ in range(0,attempts_per_count):
 
@@ -180,7 +180,14 @@ class UsingPolynomialMultiplication_FFT_UnitTests(unittest.TestCase):
         sns.lineplot(data=dataframe, x="Array Length", y="FFT Method Duration", ax=axes[0,1], hue="Includes Sum", palette=bright_palette[0:2])
         sns.scatterplot(data=dataframe, x="Array Length", y="FFT Method Duration", ax=axes[0,1], hue="Includes Sum", palette=bright_palette[0:2])
         sns.scatterplot(data=all_dataframe, x="Array Length", y="Duration", ax=axes[1,0], hue="Method", palette=bright_palette[0:3:2])
-        sns.lineplot(data=all_dataframe, x="Array Length", y="Duration", ax=axes[1,1], hue="Method", palette=bright_palette[0:3:2])
+        sns.lineplot(data=all_dataframe, x="Array Length", y="Duration", ax=axes[1,0], hue="Method", palette=bright_palette[0:3:2])
+        sns.stripplot(data=all_dataframe, x="Array Length", y="Duration", ax=axes[1,1], hue="Method", palette=bright_palette[0:3:2],
+        dodge=True, alpha=.25, zorder=1, legend=False)
+
+        sns.pointplot(data=all_dataframe, x="Array Length", y="Duration", ax=axes[1,1], hue="Method",
+    dodge=.8 - .8 / 3, palette=bright_palette[0:3:2], errorbar=None,
+    markers="d", markersize=4, linestyle="none",
+)
 
         fig.canvas.manager.set_window_title('FFT amd Brute Force Durations By Array Length')
 
