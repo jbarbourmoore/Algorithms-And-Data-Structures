@@ -213,10 +213,34 @@ def combinationsWithoutRepetition(number_of_options, count_choices_made):
 
     Returns : 
         total_possibilities : int
-            The total number of possibilities for an ordered selection that does not allow repetition
+            The total number of possibilities for an unordered selection that does not allow repetition
     '''
     total_possibilities = factorialByPrimeFactors(number_of_options) / (factorialByPrimeFactors(count_choices_made)*factorialByPrimeFactors(number_of_options - count_choices_made))
     return total_possibilities
+
+def combinationsWithRepetition(number_of_options, count_choices_made):
+    '''
+    This function calculates the number of possibilities for an unordered selection that does allow repetition
+
+    total_possibilities = (number_of_options + count_choices_made -1)! / (count_choices_made! * (number_of_options - 1)!)
+
+    An example would be finding the total number of possible combinations of 4 candy with 6 types
+    -> (6+4-1)! / 4!(6-1)! -> 9! / (4!5!) -> 
+
+    Parameters :
+        number_of_options : int
+            The number of options that each selection is choosing between (such as 6 types of candy)
+        count_choices_made : int 
+            The number of times a choice is made (such as 4 pieces of candy)
+
+    Returns : 
+        total_possibilities : int
+            The total number of possibilities for an unorder selection that does allow repetition
+    '''
+
+    numerator = factorialByPrimeFactors(number_of_options + count_choices_made - 1)
+    denominator = factorialByPrimeFactors(count_choices_made) * factorialByPrimeFactors(number_of_options - 1)
+    return numerator / denominator
 
 number = 12
 print(f"{number}! is loop:{factorialByLoop(number)}, recursion:{factorialByRecursion(number)}, and prime_factors:{factorialByPrimeFactors(number)} which are hopefully the same")
@@ -226,3 +250,4 @@ print(f"The probability of rolling a 3 and then a 5 on a six sided dice is {prob
 print(f"The total number of possible 4 digit [0-9] pins is {permutationsWithRepetition(10,4)}")
 print(f"The total number of possible orders that 4 of 16 billiards balls may go into a basket is {permutationWithoutRepetition(16,4)}")
 print(f"The total number of possible combinations that can be made with 4 of 16 billiards balls is {combinationsWithoutRepetition(16,4)}")
+print(f"The total number of possible combinations that can be made with 4 candies with 6 types balls is {combinationsWithRepetition(6,4)}")
