@@ -1,6 +1,6 @@
 def factorialByRecursion(number):
     '''
-    This method calculates the factorial of a given number by using recursion
+    This function calculates the factorial of a given number by using recursion
 
     Parameters :
         number : int 
@@ -18,7 +18,7 @@ def factorialByRecursion(number):
 
 def factorialByLoop(number):
     '''
-    This method calculates the factorial of a given number by using a loop
+    This function calculates the factorial of a given number by using a loop
 
     Parameters :
         number : int 
@@ -38,7 +38,7 @@ def factorialByLoop(number):
 
 def calculatePrimeFactors(number):
     '''
-    This method calculates the prime factors of a given number by using nested loops
+    This function calculates the prime factors of a given number by using nested loops
 
     Parameters :
         number : int 
@@ -80,7 +80,7 @@ def calculatePrimeFactors(number):
 
 def factorialByPrimeFactors(number):
     '''
-    This method calculates the factorial of a given number by using it's prime factors.
+    This function calculates the factorial of a given number by using it's prime factors.
 
     It should be the most efficient of the thre factorial algorithms
 
@@ -110,7 +110,7 @@ def factorialByPrimeFactors(number):
 
 def probabilityOfASingleEvent(successful_outcomes, total_outcomes):
     '''
-    This method calculates the probability that a single event occurs given the number of successful outcomes and the total number of outcomes
+    This function calculates the probability that a single event occurs given the number of successful outcomes and the total number of outcomes
 
     Parameters :
         successful_outcomes : int
@@ -125,5 +125,37 @@ def probabilityOfASingleEvent(successful_outcomes, total_outcomes):
 
     return successful_outcomes / total_outcomes
 
+def probabilityTwoIndependantEventsOccur(a_successful_outcomes, b_successful_outcomes, total_outcomes, b_total_outcomes=None):
+    '''
+    This function calculates the probability of two independent events occuring
+
+    The probability of events a and b is the probability of event a multiplies by the probability of event b
+
+    Parameters :
+        a_successful_outcomes : int
+            The number of successful outcomes for event a
+        b_successful_outcomes : int
+            The number of successful outcomes for event b
+        total_outcomes : int
+            The total number of potential outcomes for event a (or both event a and b)
+        b_total_outcomes : int
+            The total number of potential outcomes for event b (default is the same as a)
+
+    Returns :
+        probability : float
+            The probability that the event occurs (should be between 0 and 1, where 1 is that the event will definitely occuring)
+    '''
+
+    if b_total_outcomes == None:
+        b_total_outcomes = total_outcomes
+    
+    a_probability = probabilityOfASingleEvent(a_successful_outcomes, total_outcomes)
+    b_probability = probabilityOfASingleEvent(b_successful_outcomes, b_total_outcomes)
+
+    return a_probability * b_probability
+
 number = 12
 print(f"{number}! is loop:{factorialByLoop(number)}, recursion:{factorialByRecursion(number)}, and prime_factors:{factorialByPrimeFactors(number)} which are hopefully the same")
+
+print(f"The probability of rolling a 3  on a six sided dice is {probabilityOfASingleEvent(1,total_outcomes=6):.3f}")
+print(f"The probability of rolling a 3 and then a 5 on a six sided dice is {probabilityTwoIndependantEventsOccur(1,1,total_outcomes=6):.3f}")
