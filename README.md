@@ -45,6 +45,18 @@ Implemented two basic binary search algorithms. One uses recursion and the other
 
 ![plots comparing the distribution of both binary search implementations showing that they match](https://github.com/jbarbourmoore/Foundations_AlgosAndDataStructs/blob/fef0f1b8370cafb916fe3a5037ac62060ced7838/OutputImages/Binary_Search_Counter_Distributions_By_Algorithm_Type.png "Binary Search Algorithms Comparison")
 
+### Other Algorithms
+
+#### Karatsuba Multiplication
+
+I implemented a verson of Karatsuba's multiplication algorithm for binary numbers. It is a divide and conquer method meant for multiplying large numbers.
+
+#### Using Polynomial Multiplication Based on Fast Fourier Transforms
+
+Using the Numpy implementation of fft and ifft I implemented a function for polynomial multiplication. I then used the polynomial multiplication to implement a more efficient way to determine if a list, c, includes a number that is the sum of any number in a second list, a, and any number in a third list, b. I also implemented a brute force function with this same capability. I was then able to run both functions on random arrays with increasing complexity where the result was both true and false. I used seaborn and matplot lib to generate graphs demonstrating the time it took for both functions to run on my computer. Despite knowing that the fft polynomial multiplication based method should be more efficient I am still quite surprised by how evident that efficiency seems in the data I collected.
+
+![plots showing the difference in duration between the fft polynomial implementation and the brute force implementation on arrays between length 50 and 1000. Although both implementations increase the fft appears more linear in comparison to the brute force which appears to be increasing exponentially. The brute force method also shows a large discrepency between best times and worse case times, as the arrays that did not include the sum are more consistent higher durations.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/b7853877e6471272faa2dbca257cb7a8039c073e/OutputImages/FFT_amd_Brute_Force_Durations_By_Array_Length.png "FFT Polynomial Multiplication vs. Brute Force Durations")
+
 ## Data Structures   
 
 ### Dynamic Array
@@ -139,4 +151,5 @@ Below are some graphics showing the shortest distances and shortest paths betwee
 ![Tables comparing the shortest distances between each node in the graph when it is weighted or unweighted and directed or undirected. Weighted causes many of the distances to increase and as does directed. Directed also decreases the number of nodes are accessible from which other nodes](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/48fe4e511fcf3d83faa1bc48ddd7ff56d7dbc8ce/OutputImages/Graph_ShortestDistancesComparisons.png "Shortest Distances Comparisons")
 
 ![Tables comparing the shortest paths between each node in the graph when it is weighted or unweighted and directed or undirected. Weighted causes some of the paths to reroute to avoid particularly heavy or expensive routes. Directed  decreases the number of nodes are accessible from which other nodes, thereby changing the routing options.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/48fe4e511fcf3d83faa1bc48ddd7ff56d7dbc8ce/OutputImages/Graph_ShortestPathsComparisons.png "Shortest Paths Comparisons")
+
 
