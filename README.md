@@ -57,6 +57,12 @@ Using the Numpy implementation of fft and ifft I implemented a function for poly
 
 ![plots showing the difference in duration between the fft polynomial implementation and the brute force implementation on arrays between length 50 and 1000. Although both implementations increase the fft appears more linear in comparison to the brute force which appears to be increasing exponentially. The brute force method also shows a large discrepency between best times and worse case times, as the arrays that did not include the sum are more consistent higher durations.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/b7853877e6471272faa2dbca257cb7a8039c073e/OutputImages/FFT_amd_Brute_Force_Durations_By_Array_Length.png "FFT Polynomial Multiplication vs. Brute Force Durations")
 
+#### Factorial Algorithms (For Calculating Combinations and Permutations)   
+
+I implemented a function to calculate the factorial of a number in 3 different ways. The first two are obvious, with a recursive algorithm and one based on loops. The third variant used the prime factors in order to find the factorial. While I believe that this one should be more efficient in the worst case scenario I have yet to see this characteristic in my experimentations. Of course, the recursive algorithm cannot actually be compared past calculating the factorial of about 1000 as it hits the maximum resursion depth on my computer. So the comparison graphs below are both interesting and not as complete as I was hoping.
+
+![plots showing the duration of the factorial calculations for numbers up to 12000 both recursively and using prime factors. They both seem to shing a tendency towards exponential growth though the recursive durations seem to be consistently lower. The recursive durations are also shown up to 1000, which appears mostly linear, but as it is so restricted the appearance is unlikely to be much help.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/f430c4c5a1ba2ecdd2435ec41b08c8918b62ebed/OutputImages/Factorization_Durations_0_To_12000.png)
+
 ## Data Structures   
 
 ### Dynamic Array
