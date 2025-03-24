@@ -168,6 +168,23 @@ def circle_calculatePerimeter(radius):
 
     return math.pi * 2 * radius
 
+def cylinder_calculateVolume(radius, height):
+    '''
+    This function calculates the volume of a cylinder given it's radius and height
+
+    Parameters : 
+        radius : number
+            The radius of the cylinder
+        height : number
+            The height of the cylinder
+
+    Returns :
+        volume : number
+            The volume of the cylinder
+    '''
+
+    return math.pi * radius ** 2 * height
+
 if __name__ == '__main__':
     print(f"a right triangle with a side of 3 and a side of 4 will have a hypotenuse : {rightTriangle_calculateHypotenuse_GivenTwoSides(3, 4)}")
     print(f"a triangle with a side of 3 and hypontenuse of 5 will have a second side of : {rightTriangle_calculateSide_GivenSideHypotenuse(given_side=3, hypotenuse=5)}")
@@ -179,3 +196,4 @@ if __name__ == '__main__':
     print(f"a triangle with height 5 and width 3 will have an area of : {triangle_calculateArea(height=5, width=3)}")
     print(f"a circle with radius 4 will have an area of : {circle_calculateArea(4):.2f}")
     print(f"a circle with radius 4 will have a perimeter of : {circle_calculatePerimeter(4):.2f}")
+    print(f"a cylinder of radius 4 and height 8 will have a volume of : {cylinder_calculateVolume(radius=4,height=3):.2f}")
