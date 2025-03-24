@@ -1,3 +1,9 @@
+import pandas as pd
+import seaborn as sns
+from matplotlib import pyplot as plt
+from random import randint
+import time
+
 def factorialByRecursion(number):
     '''
     This function calculates the factorial of a given number by using recursion
@@ -107,6 +113,83 @@ def factorialByPrimeFactors(number):
             factorial *= prime_factor ** prime_factors[prime_factor]
 
     return factorial
+
+def compareFactorialDurations():
+    
+
+    durations = []
+    types = []
+    numbers = []
+    recursive_durations = []
+    recursive_numbers = []
+    recursive_method = []
+
+    for number in range(0, 12000):
+
+            start_time = time.time()
+            try:
+                recursive_factorial = factorialByRecursion(number=number)
+                duration = time.time() - start_time
+                durations.append(duration)
+                types.append("Recursive")
+                numbers.append(number)
+                recursive_durations.append(duration)
+                recursive_numbers.append(number)
+                recursive_method.append("Recursive")
+            except:
+                recursive_factorial = None
+                
+
+            start_time = time.time()
+            loop_factorial = factorialByLoop(number=number)
+            duration = time.time() - start_time
+            durations.append(duration)
+            types.append("Loop")
+            numbers.append(number)
+
+            start_time = time.time()
+            prime_factors_factorial = factorialByPrimeFactors(number=number)
+            duration = time.time() - start_time
+            durations.append(duration)
+            types.append("Prime Factors")
+            numbers.append(number)
+            print(number)
+            #print(f"{number}! is loop:{loop_factorial}, recursion:{recursive_factorial}, and prime_factors:{prime_factors_factorial} which are hopefully the same")
+
+
+    dictionary ={
+        "Duration": durations,
+        "Method": types,
+        "Number": numbers
+    }
+    dataframe = pd.DataFrame.from_dict(dictionary)
+
+    recursive_dictionary = {
+        "Duration": recursive_durations,
+        "Method": recursive_method,
+        "Number": recursive_numbers
+    }
+    recursive_datafrom = pd.DataFrame.from_dict(recursive_dictionary)
+
+    dataframe.dropna()
+
+    dataframe.to_csv("Factorial_Durations.csv")
+
+    fig, axes = plt.subplots(nrows=1, ncols=2, sharey=False)
+    fig.set_figwidth(10)
+    fig.set_figheight(6)
+
+    bright_palette = sns.hls_palette(h=.5)
+
+    sns.set_theme(style="whitegrid", palette=bright_palette)
+    sns.scatterplot(data=dataframe, x="Number", y="Duration", ax=axes[0], hue="Method", palette=bright_palette[0:3])
+    sns.scatterplot(data=recursive_datafrom, x="Number", y="Duration", ax=axes[1], hue="Method", palette=bright_palette[0:1])
+
+
+    fig.canvas.manager.set_window_title('FFT amd Brute Force Durations By Array Length')
+
+    plt.tight_layout()
+    plt.show()
 
 def probabilityOfASingleEvent(successful_outcomes, total_outcomes):
     '''
@@ -225,7 +308,7 @@ def combinationsWithRepetition(number_of_options, count_choices_made):
     total_possibilities = (number_of_options + count_choices_made -1)! / (count_choices_made! * (number_of_options - 1)!)
 
     An example would be finding the total number of possible combinations of 4 candy with 6 types
-    -> (6+4-1)! / 4!(6-1)! -> 9! / (4!5!) -> 
+    -> (6+4-1)! / 4!(6-1)! -> 9! / (4!5!) -> 126
 
     Parameters :
         number_of_options : int
@@ -250,4 +333,6 @@ print(f"The probability of rolling a 3 and then a 5 on a six sided dice is {prob
 print(f"The total number of possible 4 digit [0-9] pins is {permutationsWithRepetition(10,4)}")
 print(f"The total number of possible orders that 4 of 16 billiards balls may go into a basket is {permutationWithoutRepetition(16,4)}")
 print(f"The total number of possible combinations that can be made with 4 of 16 billiards balls is {combinationsWithoutRepetition(16,4)}")
-print(f"The total number of possible combinations that can be made with 4 candies with 6 types balls is {combinationsWithRepetition(6,4)}")
+print(f"The total number of possible combinations that can be made with 4 candies with 6 types is {combinationsWithRepetition(6,4)}")
+
+compareFactorialDurations()
