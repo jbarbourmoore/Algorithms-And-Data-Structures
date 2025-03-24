@@ -1,4 +1,4 @@
-
+import math
 
 def rightTriangle_calculateHypotenuse_GivenTwoSides(a_side, b_side):
     '''
@@ -121,11 +121,61 @@ def rectangle_calculatePerimeter(length, width):
 
     return 2 * (length + width)
 
+def triangle_calculateArea(height, width):
+    '''
+    This function calculates the area of a triangle given the height and the width
+
+    Parameters :
+        height : number
+            The height of the triangle
+        width : number 
+            The width of the rectangle
+    
+    Returns :
+        area : number
+            The area of the triangle
+    '''
+
+    return height * width / 2
+
+def circle_calculateArea(radius):
+    '''
+    This function calculates the area of a circle given it's radius
+
+    Parameters : 
+        radius : number
+            The radius of the circle
+
+    Returns :
+        area : number
+            The area of the circle
+    '''
+
+    return math.pi * radius ** 2
+
+def circle_calculatePerimeter(radius):
+    '''
+    This function calculates the perimeter of a circle given its radius
+
+    Parameters : 
+        radius : number
+            The radius of the circle
+
+    Returns : 
+        perimeter : number
+            The perimeter of the circle
+    '''
+
+    return math.pi * 2 * radius
+
 if __name__ == '__main__':
     print(f"a right triangle with a side of 3 and a side of 4 will have a hypotenuse : {rightTriangle_calculateHypotenuse_GivenTwoSides(3, 4)}")
     print(f"a triangle with a side of 3 and hypontenuse of 5 will have a second side of : {rightTriangle_calculateSide_GivenSideHypotenuse(given_side=3, hypotenuse=5)}")
     print(f"a polynomial with 6 sides will have an interior angle sum of : {polynomial_calculateInteriorAngleSum(6)}")
-    print(f"a square with sides of 5 will have an area of {square_calculateArea(5)}")
-    print(f"a square with sides of 5 will have a perimeter of {square_calculatePerimeter(5)}")
-    print(f"A rectangle with a length 4 and a width 3 will have an area of {rectangle_calculateArea(length=4, width=3)}")
-    print(f"A rectangle with a length 4 and a width 3 will have an perimeter of {rectangle_calculatePerimeter(length=4, width=3)}")
+    print(f"a square with sides of 5 will have an area of : {square_calculateArea(5)}")
+    print(f"a square with sides of 5 will have a perimeter of : {square_calculatePerimeter(5)}")
+    print(f"A rectangle with a length 4 and a width 3 will have an area of : {rectangle_calculateArea(length=4, width=3)}")
+    print(f"A rectangle with a length 4 and a width 3 will have an perimeter of : {rectangle_calculatePerimeter(length=4, width=3)}")
+    print(f"a triangle with height 5 and width 3 will have an area of : {triangle_calculateArea(height=5, width=3)}")
+    print(f"a circle with radius 4 will have an area of : {circle_calculateArea(4):.2f}")
+    print(f"a circle with radius 4 will have a perimeter of : {circle_calculatePerimeter(4):.2f}")
