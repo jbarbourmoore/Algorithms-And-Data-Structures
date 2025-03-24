@@ -124,7 +124,7 @@ def compareFactorialDurations():
     recursive_numbers = []
     recursive_method = []
 
-    for number in range(0, 12000):
+    for number in range(0, 30000,25):
 
             start_time = time.time()
             try:
@@ -325,14 +325,16 @@ def combinationsWithRepetition(number_of_options, count_choices_made):
     denominator = factorialByPrimeFactors(count_choices_made) * factorialByPrimeFactors(number_of_options - 1)
     return numerator / denominator
 
-number = 12
-print(f"{number}! is loop:{factorialByLoop(number)}, recursion:{factorialByRecursion(number)}, and prime_factors:{factorialByPrimeFactors(number)} which are hopefully the same")
+if __name__ == '__main__':
 
-print(f"The probability of rolling a 3  on a six sided dice is {probabilityOfASingleEvent(1,total_outcomes=6):.3f}")
-print(f"The probability of rolling a 3 and then a 5 on a six sided dice is {probabilityTwoIndependantEventsOccur(1,1,total_outcomes=6):.3f}")
-print(f"The total number of possible 4 digit [0-9] pins is {permutationsWithRepetition(10,4)}")
-print(f"The total number of possible orders that 4 of 16 billiards balls may go into a basket is {permutationWithoutRepetition(16,4)}")
-print(f"The total number of possible combinations that can be made with 4 of 16 billiards balls is {combinationsWithoutRepetition(16,4)}")
-print(f"The total number of possible combinations that can be made with 4 candies with 6 types is {combinationsWithRepetition(6,4)}")
+    number = 12
+    print(f"{number}! is loop:{factorialByLoop(number)}, recursion:{factorialByRecursion(number)}, and prime_factors:{factorialByPrimeFactors(number)} which are hopefully the same")
 
-compareFactorialDurations()
+    print(f"The probability of rolling a 3  on a six sided dice is {probabilityOfASingleEvent(1,total_outcomes=6):.3f}")
+    print(f"The probability of rolling a 3 and then a 5 on a six sided dice is {probabilityTwoIndependantEventsOccur(1,1,total_outcomes=6):.3f}")
+    print(f"The total number of possible 4 digit [0-9] pins is {permutationsWithRepetition(10,4)}")
+    print(f"The total number of possible orders that 4 of 16 billiards balls may go into a basket is {permutationWithoutRepetition(16,4)}")
+    print(f"The total number of possible combinations that can be made with 4 of 16 billiards balls is {combinationsWithoutRepetition(16,4)}")
+    print(f"The total number of possible combinations that can be made with 4 candies with 6 types is {combinationsWithRepetition(6,4)}")
+
+    compareFactorialDurations()
