@@ -1,3 +1,4 @@
+import pulp as lp
 
 class StockOption():
     '''
@@ -27,6 +28,10 @@ class StockOption():
         self.expected_returns_per_unit = expected_returns_per_unit
         self.earnings_per_unit = earnings_per_unit
         self.category = category
+        self.optimized_purchase_quantity = None
+
+    def setOptimizedPurchaseQuantity(self, optimized_purchase_quantity):
+        self.optimized_purchase_quantity = optimized_purchase_quantity
 
 class InvestmentMaximization():
     '''
@@ -47,6 +52,7 @@ class InvestmentMaximization():
 
         self.budget = budget
         self.loadStockOptions(stock_options=stock_options)
+        self.total_optomized_expected_returns = None
 
     def loadStockOptions(self, stock_options):
         '''
@@ -75,11 +81,11 @@ class InvestmentMaximization():
             default_stock_options : {"str":[]}
                 The dictionary containing the default stock options
         '''
-
+        
         default_stock_options = {
             "Stock" : ["Microsoft","Apple","Pfizer","CVS","Coca-Cola","Disney"],
-            "Price/Unit":[123,312,81.6,35,45,123],
-            "Expected Returns/Unit":[19,22,4,2,6,4],
+            "Price/Unit":[210,254,81.6,35,45,151],
+            "Expected Returns/Unit":[19,28,4,2,6,4],
             "Earnings/Unit":[1.4,7.6,1.8,8,3.5,4],
             "Category":["Tech","Tech","Health","Health","Commodities","Commodities"]
         }
@@ -101,7 +107,36 @@ class InvestmentMaximization():
             categories[stock_option.category].append(stock_option)
         return categories
     
+    def calculateInvestmentMaximization(self):
+
+        # the objective is to maximize the total expected return for the stock investment
+        lpModel = lp.LpProblem('InvestmentMaximization', lp.LpMaximize)
+        purchase_units = [ lp.LpVariable(f'x{stock.id}', 0, None) for stock in self.stock_options ] 
+        lpModel += lp.lpSum([stock.expected_returns_per_unit*purchase_units[stock.id] for stock in self.stock_options])
+        
+        # the total cost of purchasing the units must be less than or equal to the budget
+        lpModel += lp.lpSum([stock.price_per_unit*purchase_units[stock.id] for stock in self.stock_options]) <= self.budget
+        
+        # each category's purchase value should be between 1 / 2 * number_of_categories and 2 / number_of_categories of the budget
+        stock_options_by_category = self.getStockOptionsByCategory()
+        category_count = len(stock_options_by_category)
+        for name,category in stock_options_by_category.items():
+            lpModel += lp.lpSum([stock.price_per_unit*purchase_units[stock.id] for stock in category]) <= self.budget * (2 / category_count)
+            lpModel += lp.lpSum([stock.price_per_unit*purchase_units[stock.id] for stock in category]) >= self.budget / (category_count * 2)
+
+        # purchase price must be less that 15 * stock earnings
+        lpModel += lp.lpSum([stock.price_per_unit*purchase_units[stock.id] for stock in self.stock_options]) <= 15 * lp.lpSum([stock.earnings_per_unit*purchase_units[stock.id] for stock in self.stock_options])
+        
+        lpModel.solve(lp.PULP_CBC_CMD(msg=False))
+
+        for stock in self.stock_options:
+            stock.optimized_purchase_quantity = purchase_units[stock.id].varValue
+            print(f"{stock.id} : purchase {stock.optimized_purchase_quantity:.2f} units of {stock.name} at ${stock.price_per_unit} per unit for ${stock.optimized_purchase_quantity*stock.price_per_unit:.2f} total cost")
+        self.total_optomized_expected_returns = lp.value(lpModel.objective)
+        print(f"Total expected returns are ${self.total_optomized_expected_returns:.2f}")
+    
 if __name__ == '__main__':
     print("Loading Default Stocks")
     investment_maximization = InvestmentMaximization() 
-    print(investment_maximization.getStockOptionsByCategory())   
+    print("Maximizing Investment")
+    investment_maximization.calculateInvestmentMaximization()
