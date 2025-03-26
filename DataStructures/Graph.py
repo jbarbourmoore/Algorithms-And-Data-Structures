@@ -1,7 +1,8 @@
 import pandas as pd
-
+import networkx as nx
+from matplotlib import pyplot as plt
 import MinHeapForObjects
-
+import seaborn as sns
 class GraphNode():
     '''
     This class is a node for the undirected graph data structure
@@ -215,6 +216,7 @@ class Graph():
             self.nodes[i] = GraphNode(i, debug=self.is_debug)
 
         self.weighted_edges = []
+        self.weighted_edges_vis_list = []
         self.addEdges(edge_list=edge_tuples)
 
         if self.is_debug:
@@ -268,6 +270,7 @@ class Graph():
         '''
         edge_id = len(self.weighted_edges)
         self.weighted_edges.append(GraphEdgeWithWeight(start_node=start, end_node=end, weight=weight, edge_id=edge_id))
+        self.weighted_edges_vis_list.append((start,end,weight))
         self.addNeighborsToNodes(start=start,end=end,weight=weight)
 
     def addNeighborsToNodes(self, start, end, weight):
@@ -749,6 +752,40 @@ class Graph():
         paths_dataframe = pd.DataFrame.from_dict(paths_dictionary)
 
         return distances_dataframe, paths_dataframe
+    
+    def visualize_graph(self):
+        '''
+        This method creates a graphical visualization of the graph using matplotlib and networkx
+        '''
+
+        options = {"edgecolors": "tab:gray", "node_size": 800, "alpha": 1, "font_color":"whitesmoke", "font_size":16}
+        bright_palette = sns.hls_palette(h=.5)
+        graph_visualization = nx.DiGraph()
+        graph_visualization.add_nodes_from(range(self.number_of_nodes))
+        color_map = [bright_palette[0] if j == -1 else bright_palette[1] for j in range(self.number_of_nodes)]
+        graph_visualization.add_weighted_edges_from(self.weighted_edges_vis_list)
+        position_mapping = nx.circular_layout(graph_visualization)
+        plt.figure(figsize=(10,5))
+        graph_axes = plt.gca()
+        title = ''
+
+        if self.is_weighted:
+            title += "Weighted "
+        else:
+            title += "Unweighted "
+        if self.is_directed:
+            title += " and Directed "
+        else:
+            title += " and Undirected "
+        title += f'Graph With {self.number_of_nodes} Nodes'
+        graph_axes.set_title(f'{title}')
+        if not self.is_directed:
+            graph_visualization = graph_visualization.to_undirected()
+        nx.draw(graph_visualization, pos=position_mapping, node_color=color_map, with_labels=True, **options)
+        if self.is_weighted:
+            weight_labels = nx.get_edge_attributes(graph_visualization, 'weight')
+            nx.draw_networkx_edge_labels(graph_visualization, position_mapping, edge_labels=weight_labels, font_color=bright_palette[1])
+        plt.show()
 
 if __name__ == '__main__':
 
@@ -878,3 +915,5 @@ if __name__ == '__main__':
     print("\n Shortest path between all nodes in a weighted, directed graph using Dijkstra's Algorithm")
     print(weighted_directed_paths)
     print("\n\n")
+
+    weighted_directed_Dijkstra_graph.visualize_graph()
