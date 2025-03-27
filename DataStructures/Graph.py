@@ -774,9 +774,9 @@ class Graph():
         else:
             title += "Unweighted "
         if self.is_directed:
-            title += " and Directed "
+            title += "and Directed "
         else:
-            title += " and Undirected "
+            title += "and Undirected "
         title += f'Graph With {self.number_of_nodes} Nodes'
         graph_axes.set_title(f'{title}')
         if not self.is_directed:
@@ -916,4 +916,5 @@ if __name__ == '__main__':
     print(weighted_directed_paths)
     print("\n\n")
 
+    unweighted_undirected_Dijkstra_graph.visualize_graph()
     weighted_directed_Dijkstra_graph.visualize_graph()
