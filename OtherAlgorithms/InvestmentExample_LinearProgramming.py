@@ -1,4 +1,5 @@
 import pulp as lp
+import pandas as pd
 
 class StockOption():
     '''
@@ -37,11 +38,11 @@ class InvestmentMaximization():
     '''
     This class attempts to maximize the portfolio's returns based on certain criteria
     '''
-    column_names = ["Stock","Price/Unit","Expected Returns/Unit","Earnings/Unit","Category"]
+    column_names = ["Stock","Price/Unit","Expected Returns/Unit","Earnings/Unit","Category","Units To Purchase","Total Purchase Price", "Expected Returns"]
 
     def __init__(self, stock_options = None, budget = 10000):
         '''
-        This function initializes the investmentmaximization
+        This method initializes the investmentmaximization
 
         Parameters :
             stock_options : {"str":[]}, optional
@@ -56,7 +57,7 @@ class InvestmentMaximization():
 
     def loadStockOptions(self, stock_options):
         '''
-        This function loads the stock options from the dictionary
+        This method loads the stock options from the dictionary
 
         Parameters :
             stock_options : {"str":[]}
@@ -75,25 +76,25 @@ class InvestmentMaximization():
     
     def getDefaultStockOptions(self):
         '''
-        This function returns the default stock options
+        This method returns the default stock options
 
         Returns :
             default_stock_options : {"str":[]}
                 The dictionary containing the default stock options
         '''
-        
+
         default_stock_options = {
-            "Stock" : ["Microsoft","Apple","Pfizer","CVS","Coca-Cola","Disney"],
-            "Price/Unit":[210,254,81.6,35,45,151],
-            "Expected Returns/Unit":[19,28,4,2,6,4],
-            "Earnings/Unit":[1.4,7.6,1.8,8,3.5,4],
-            "Category":["Tech","Tech","Health","Health","Commodities","Commodities"]
+            self.column_names[0] : ["Ford","General Motors","Harley-Davidson","Microsoft","Apple","IBM","Pfizer","CVS","Coca-Cola","Disney"],
+            self.column_names[1] : [10.30, 50.95, 25.96, 389.97,221.53,250.34,25.21,67.20,70.02,100.78],
+            self.column_names[2] : [.0876*10.3, .0514*50.95, .0144*25.96, .024*389.97, 221.53*.0743,250.34*.0267,25.21*.0458,67.20*.0523,70.02*0.296,100.78*.0098],
+            self.column_names[3] : [.038*10.3,.0192+50.95,.0093*25.96,.0084*389.97,221.53*.045,250.34*.0213,25.21*.0673,67.20*.04,70.02*.011,100.78*.0586],
+            self.column_names[4] : ["Vehicles","Vehicles","Vehicles","Tech","Tech","Tech","Health","Health","Commodities","Commodities"]
         }
         return default_stock_options
         
     def getStockOptionsByCategory(self):
         '''
-        This function returns the dictionary of categories with lists of each investion option inside
+        This method returns the dictionary of categories with lists of each investion option inside
 
         Returns :
             categories : {"str":[StockOption]}
@@ -108,6 +109,9 @@ class InvestmentMaximization():
         return categories
     
     def calculateInvestmentMaximization(self):
+        '''
+        This method calculates the optimal stock purchases to fit certain parameters
+        '''
 
         # the objective is to maximize the total expected return for the stock investment
         lpModel = lp.LpProblem('InvestmentMaximization', lp.LpMaximize)
@@ -135,8 +139,58 @@ class InvestmentMaximization():
         self.total_optomized_expected_returns = lp.value(lpModel.objective)
         print(f"Total expected returns are ${self.total_optomized_expected_returns:.2f}")
     
+    def generateDataframe(self):
+        '''
+        This method returns a dataframe with all of the data on the stock options and current recommendations
+        '''
+
+        stock_names = []
+        stock_prices = []
+        stock_expected_returns = []
+        stock_earnings_per_unit = []
+        stock_categories = []
+        if self.total_optomized_expected_returns!= None:
+            stock_to_purchases = []
+            stock_total_costs = []
+            stock_total_expected_returns = []
+        for stock in self.stock_options:
+            stock_names.append(stock.name)
+            stock_prices.append(stock.price_per_unit)
+            stock_expected_returns.append(stock.expected_returns_per_unit)
+            stock_earnings_per_unit.append(stock.earnings_per_unit)
+            stock_categories.append(stock.category)
+            if self.total_optomized_expected_returns!= None:
+                stock_to_purchases.append(stock.optimized_purchase_quantity)
+                stock_total_costs.append(stock.optimized_purchase_quantity*stock.price_per_unit)
+                stock_total_expected_returns.append(stock.optimized_purchase_quantity*stock.earnings_per_unit)
+        dictionary = {
+            self.column_names[0] : stock_names,
+            self.column_names[1] : stock_prices,
+            self.column_names[2] : stock_expected_returns,
+            self.column_names[3] : stock_earnings_per_unit,
+            self.column_names[4] : stock_categories,
+        }
+        if self.total_optomized_expected_returns!= None:
+            dictionary[self.column_names[5]] = stock_to_purchases
+            dictionary[self.column_names[6]] = stock_total_costs
+            dictionary[self.column_names[7]] = stock_total_expected_returns
+        pd.options.display.float_format = '{:,.2f}'.format
+
+        dataframe = pd.DataFrame.from_dict(dictionary)
+        return dataframe
+
+    
 if __name__ == '__main__':
+    print("- - - - - - - - - - - - - - - ")
     print("Loading Default Stocks")
+    print("- - - - - - - - - - - - - - - ")
     investment_maximization = InvestmentMaximization() 
+    print(investment_maximization.generateDataframe())
+    print("- - - - - - - - - - - - - - - ")
     print("Maximizing Investment")
+    print("- - - - - - - - - - - - - - - ")
     investment_maximization.calculateInvestmentMaximization()
+    print("- - - - - - - - - - - - - - - ")
+    print("Outputting The Data")
+    print("- - - - - - - - - - - - - - - ")
+    print(investment_maximization.generateDataframe())
