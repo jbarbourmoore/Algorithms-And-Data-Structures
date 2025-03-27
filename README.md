@@ -61,7 +61,35 @@ Using the Numpy implementation of fft and ifft I implemented a function for poly
 
 I implemented a function to calculate the factorial of a number in 3 different ways. The first two are obvious, with a recursive algorithm and one based on loops. The third variant used the prime factors in order to find the factorial. While I believe that this one should be more efficient in the worst case scenario I have yet to see this characteristic in my experimentations. Of course, the recursive algorithm cannot actually be compared past calculating the factorial of about 1000 as it hits the maximum resursion depth on my computer. So the comparison graphs below are both interesting and not as complete as I was hoping.
 
-![plots showing the duration of the factorial calculations for numbers up to 12000 both recursively and using prime factors. They both seem to shing a tendency towards exponential growth though the recursive durations seem to be consistently lower. The recursive durations are also shown up to 1000, which appears mostly linear, but as it is so restricted the appearance is unlikely to be much help.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/f430c4c5a1ba2ecdd2435ec41b08c8918b62ebed/OutputImages/Factorization_Durations_0_To_12000.png)
+![plots showing the duration of the factorial calculations for numbers up to 12000 both recursively and using prime factors. They both seem to shing a tendency towards exponential growth though the recursive durations seem to be consistently lower. The recursive durations are also shown up to 1000, which appears mostly linear, but as it is so restricted the appearance is unlikely to be much help.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/f430c4c5a1ba2ecdd2435ec41b08c8918b62ebed/OutputImages/Factorization_Durations_0_To_12000.png "Factorization Durations by Number")   
+
+#### Finding the Longest Stable Subsequence Using Dynamic Programming    
+
+I used dynamic programming algorithm in order to find the longest stable subsequence of a list. The longest stable subsequence was one where the values continued increasing and the values with no more than one apart from each other.
+
+#### Transportation Optomization With Linear Programming
+
+I used linear programming in order to find the best way to move items from starting locations to the destinations, assuming the best way was minimizing the distance the stuff was transported. This can be displayed using NetworkX simply to show how much weight was moved between each source node and each destination node.    
+
+![Visualization of how much of the weight was moved from each starting point to each ending point](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/708ede1d9ab4231a2e2469c1420da9fe5f81538c/OutputImages/TransportOptomization_VizualizedNodesAndWeight.png "Transportation Visualization by Weight")   
+
+I also used linear programming to maximize the potential profits by setting the prices within specific parameters.
+
+![This simply shows the starting locations, the destinations, how much to move and what to set the prices.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/708ede1d9ab4231a2e2469c1420da9fe5f81538c/OutputImages/TransportationOptomization_OutputData.png "Transportation Optomization Output")
+
+#### Investment Optomization With Linear Programming    
+
+I utilized linear programming in order to select the best stocks (from those passed into the class) to buy in order to acheive a balanced portfolio.   
+
+![The break down of the stock data and how much would be optomal to buy within a certain budget](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/708ede1d9ab4231a2e2469c1420da9fe5f81538c/OutputImages/InvestmentExample_ConsoleOutput.png "Investment Optomization")
+
+#### Coloring Nodes With Binary Linear Programming
+
+I used binary variable in linear programming in order to find the best way to color nodes so that each node is a different color from all of those touching it. The class works with an inputted number of number, list of edges and number of colors.
+
+![This shows a small graph of four nodes. It uses 3 colors and none of the nodes are connected to a node of the same color.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/708ede1d9ab4231a2e2469c1420da9fe5f81538c/OutputImages/ColoringNode_3Colors4Nodes.png "Coloring 4 nodes with 3 colors")   
+
+![This shows a larger graph of 10 nodes. It uses 4 colors and none of the nodes are connected to a node of the same color.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/708ede1d9ab4231a2e2469c1420da9fe5f81538c/OutputImages/ColoringNode_4Colors10Nodes.png "Coloring 10 Nodes with 4 Colors")
 
 ## Data Structures   
 
@@ -147,6 +175,14 @@ The is_breadth Boolean determines whether the traversal methods will run breadth
 #### Weighted or Unweighted Edges    
 
 The is_weighted Boolean determines whether the edges in a graph are weighted. This weight data is used when calculating the shortest distance to each node and similar algorithms. Unweighted graphs default to each edge weighted 1 for the sake of the calculations.  
+
+#### Visualizations of the Graphs
+
+Shows one graph with unweighted and undirected edges as well as one graph with weighted and directed edges. Generated programmatically using NetworkX and MatPlotLib.    
+
+![An unweighted and undirected graph with 10 nodes](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/708ede1d9ab4231a2e2469c1420da9fe5f81538c/OutputImages/Graph_Visualized_UnweightedUndirected.png "Unweighted, Undirected Graph")
+
+![A weighted and directed graph with 10 nodes](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/main/OutputImages/Graph_Visualized_WeightedDirected.png "Weighted and Directed Graph")
 
 #### Dijkstra's Algorithm for Shortest Paths
 
