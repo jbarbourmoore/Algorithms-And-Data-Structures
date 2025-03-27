@@ -2,6 +2,7 @@ import pulp as lp
 import seaborn as sns
 import networkx as nx
 from matplotlib import pyplot as plt
+import pandas as pd
 
 def calculateDistance(source_coordinate, destination_coordinate):
     '''
@@ -68,7 +69,7 @@ class TransportationRequirements():
         lpModel.solve(lp.PULP_CBC_CMD(msg=False))
         
         if lpModel.status == lp.constants.LpStatusOptimal:
-            print("Optimal Solution Found")
+            print("Optimal Solution To Minimize Distance Found")
             self.optimal_quantities_moved = [[transport_quantity[i][j].varValue for j in range(0,self.number_of_destinations)] for i in range(0,self.number_of_sources)]
             self.minimal_distance_moved = lpModel.objective.value()
         elif lpModel.status == lp.constants.LpStatusUnbounded:
@@ -77,7 +78,35 @@ class TransportationRequirements():
             print("Infeasible Solution")
         else: 
             print("Undefined Status")
-    
+
+    def calculateOptimalTransport_MaximizedPrices(self):
+        '''
+        This method calculates the source and destination prices in order to maximize profits, within specific criteria
+        '''
+        
+        lpModel = lp.LpProblem('TransportationPricing', lp.LpMaximize)
+        source_prices = [lp.LpVariable(f's{i}', 0, None)for i in range(0,self.number_of_sources) ] 
+        destination_prices = [lp.LpVariable(f'd{j}', 0, None)for j in range(0,self.number_of_destinations) ] 
+
+        lpModel += lp.lpSum([destination_prices[j] * self.destination_weights[j] for j in range(0,self.number_of_destinations)]) - lp.lpSum([source_prices[i] * self.source_weights[i] for i in range(0,self.number_of_sources)])    
+        for i in range(0,self.number_of_sources):
+            for j in range(0,self.number_of_destinations):
+                lpModel += destination_prices[j] - source_prices[i] <= calculateDistance(self.source_coordinates[i],self.destination_coordinates[j])
+            
+        lpModel.solve(lp.PULP_CBC_CMD(msg=False))
+        if lpModel.status == lp.constants.LpStatusOptimal:
+            print("Optimal Solution To Maximize Profits Found")
+            self.source_prices = [v.varValue for v in source_prices]
+            self.destination_prices = [v.varValue for v in destination_prices]
+            self.maximized_profit = lpModel.objective.value()
+        elif lpModel.status == lp.constants.LpStatusUnbounded:
+            print("Unbounded Solution")
+        elif lpModel.status == lp.constants.LpStatusInfeasible:
+            print("Infeasible Solution")
+        else: 
+            print("Undefined Status")
+        
+
     def calculateWeightedDirectedEdges_MinimizedDistance(self):
         '''
         This method created a list of directed edges, where each weight is the amount transported in the optimal model
@@ -115,11 +144,54 @@ class TransportationRequirements():
         nx.draw_networkx_edge_labels(graph_visualization, position_mapping, edge_labels=weight_labels, font_color=bright_palette[1])
         plt.show()
 
-source_coordinates = [ (1,1), (2,2), (3,3), (4, 4), (5,5), (6,6) ]
-source_weights = [10, 10, 10, 10, 10, 10]
-destination_coordinates = [ (6,1), (5, 2), (4,3), (3,2), (2,1) ]
-destination_weights = [12, 12, 12, 12, 12]
+    def outputResults(self):
+        '''
+        This function outputs the calculated data to the console
+        '''
 
-plan = TransportationRequirements(source_coordinates, source_weights, destination_coordinates, destination_weights)
-plan.calculateOptimalTransport_MinimalDistance()
-plan.visualizeOptomizedTransport_MinimimizedDistance()
+        optomized_transport_source = []
+        optomized_transport_destination = []
+        for i in range(0,self.number_of_sources):
+            optomized_transport_source.append([f"{self.destination_coordinates[j]}: {self.destination_weights[j]:.2f}" for j in range(0,self.number_of_destinations) if self.optimal_quantities_moved[i][j]>0])
+        for j in range(0,self.number_of_destinations):
+            optomized_transport_destination.append([f"{self.source_coordinates[i]}: {self.optimal_quantities_moved[i][j]:.2f}" for i in range(0,self.number_of_sources) if self.optimal_quantities_moved[i][j]>0 ])
+
+        source_dictionary = {
+            "Coordinates" : self.source_coordinates,
+            "Weights" : self.source_weights,
+            "Prices" : self.source_prices,
+            "Optomized Transport" : optomized_transport_source
+        }
+        destination_dictionary = {
+            "Coordinates" : self.destination_coordinates,
+            "Weights" : self.destination_weights,
+            "Prices" : self.destination_prices,
+            "Optomized Transport" : optomized_transport_destination
+        }
+
+        pd.options.display.float_format = '{:,.2f}'.format
+        source_dataframe = pd.DataFrame.from_dict(source_dictionary)
+        destination_dataframe = pd.DataFrame.from_dict(destination_dictionary)
+
+        print(" - - - - - - - - - - - - - - - ")
+        print("The final results for the transportaion optomization:")
+        print(f"The minimal distance was {self.minimal_distance_moved} and the maximum profit was {self.maximized_profit}")
+        print(" - - - - - - - - - - - - - - - ")
+        print("The Source Locations")
+        print(source_dataframe)
+        print(" - - - - - - - - - - - - - - - ")
+        print("The Destination Locations")
+        print(destination_dataframe)
+        print(" - - - - - - - - - - - - - - - ")
+
+if __name__ == '__main__':
+    source_coordinates = [ (1,1), (2,2), (3,3), (4, 4), (5,5), (6,6) ]
+    source_weights = [10, 10, 10, 10, 10, 10]
+    destination_coordinates = [ (6,1), (5, 2), (4,3), (3,2), (2,1) ]
+    destination_weights = [12, 12, 12, 12, 12]
+
+    plan = TransportationRequirements(source_coordinates, source_weights, destination_coordinates, destination_weights)
+    plan.calculateOptimalTransport_MinimalDistance()
+    plan.visualizeOptomizedTransport_MinimimizedDistance()
+    plan.calculateOptimalTransport_MaximizedPrices()
+    plan.outputResults()
