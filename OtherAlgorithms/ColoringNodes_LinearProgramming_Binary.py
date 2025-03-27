@@ -1,4 +1,8 @@
 from pulp import *
+import seaborn as sns
+import networkx as nx
+from matplotlib import pyplot as plt
+
 def verifyColorAssignments( number_of_nodes, edge_list, number_of_colors, color_assignments ):
     '''
     This function verifies the generated color assignments fit the constraints
@@ -58,6 +62,7 @@ class ColoringNodes():
         self.number_of_nodes = number_of_nodes
         self.edge_list = edge_list
         self.number_of_colors = number_of_colors
+        self.color_list = []
 
     def determineColors(self):
         '''
@@ -89,21 +94,77 @@ class ColoringNodes():
             color_list = []
             for i in range(0, self.number_of_nodes):
                 color_list += [c for c in range(self.number_of_colors) if x_colors[c][i].varValue == 1]
+            self.color_list = color_list
             return color_list
         else:
+            print(f"Unable to assign {self.number_of_colors} colors to the graph with {self.number_of_nodes} nodes and the edges {self.edge_list}")
             return None
-        
-number_of_nodes = 4
-edge_list = [(0,1), (0, 2), (0,3), (1,2), (1, 3), (2,3)]
-number_of_colors = 3
-color_determination = ColoringNodes(number_of_nodes, edge_list=edge_list,number_of_colors=number_of_colors)
-color_assignments = color_determination.determineColors()
-assert color_assignments == None
-number_of_nodes = 4
-number_of_colors = 3
-edge_list = [(0,1), (0, 2), (0,3), (1, 3), (2,3)]
-color_determination = ColoringNodes(number_of_nodes, edge_list=edge_list,number_of_colors=number_of_colors)
-color_assignments = color_determination.determineColors()
-assert color_assignments != None
-print(f'Color assignment: {color_assignments}')
-verifyColorAssignments(number_of_nodes, edge_list, number_of_colors, color_assignments)
+    
+    def visualizNodeColorations(self):
+        '''
+        This method creates a graphical visualization of the colored nodes using matplotlib and networkx
+        '''
+
+        options = {"edgecolors": "tab:gray", "node_size": 800, "alpha": 1, "font_color":"whitesmoke", "font_size":16}
+        bright_palette = sns.hls_palette(h=.5)
+        graph_visualization = nx.DiGraph()
+        graph_visualization.add_nodes_from(range(self.number_of_nodes))
+        if self.number_of_colors < 5:
+            color_map = [bright_palette[self.color_list[j]] for j in range(self.number_of_nodes)]
+        else:
+            color_map = self.color_list
+        graph_visualization.add_edges_from(self.edge_list)
+        graph_visualization = graph_visualization.to_undirected()
+        position_mapping = nx.circular_layout(graph_visualization)
+
+        plt.figure(figsize=(10,5))
+        graph_axes = plt.gca()
+        title = f'Colored Graph With {number_of_nodes} Nodes and {number_of_colors} Colors'
+        graph_axes.set_title(f'{title}')
+        nx.draw(graph_visualization, pos=position_mapping, node_color=color_map, with_labels=True, **options)
+
+        plt.show()
+
+if __name__ == '__main__':
+    number_of_nodes = 4
+    edge_list = [(0,1), (0, 2), (0,3), (1,2), (1, 3), (2,3)]
+    number_of_colors = 3
+    color_determination = ColoringNodes(number_of_nodes, edge_list=edge_list,number_of_colors=number_of_colors)
+    color_assignments = color_determination.determineColors()
+    assert color_assignments == None
+    number_of_nodes = 4
+    edge_list = [(0,1), (0, 2), (0,3), (1,2), (1, 3), (2,3)]
+    number_of_colors = 4
+    color_determination = ColoringNodes(number_of_nodes, edge_list=edge_list,number_of_colors=number_of_colors)
+    color_assignments = color_determination.determineColors()
+    assert color_assignments != None
+    print(f'Color assignment: {color_assignments}')
+    verifyColorAssignments(number_of_nodes, edge_list, number_of_colors, color_assignments)
+    color_determination.visualizNodeColorations()
+    number_of_nodes = 4
+    number_of_colors = 3
+    edge_list = [(0,1), (0, 2), (0,3), (1, 3), (2,3)]
+    color_determination = ColoringNodes(number_of_nodes, edge_list=edge_list,number_of_colors=number_of_colors)
+    color_assignments = color_determination.determineColors()
+    assert color_assignments != None
+    print(f'Color assignment: {color_assignments}')
+    verifyColorAssignments(number_of_nodes, edge_list, number_of_colors, color_assignments)
+    color_determination.visualizNodeColorations()
+    number_of_nodes = 10
+    number_of_colors = 3
+    edge_list = [(0,1),(1,2),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5),(7,8),(8,9),(9,7)]
+    color_determination = ColoringNodes(number_of_nodes, edge_list=edge_list,number_of_colors=number_of_colors)
+    color_assignments = color_determination.determineColors()
+    assert color_assignments != None
+    print(f'Color assignment: {color_assignments}')
+    verifyColorAssignments(number_of_nodes, edge_list, number_of_colors, color_assignments)
+    color_determination.visualizNodeColorations()
+    number_of_nodes = 10
+    number_of_colors = 4
+    edge_list = [(0,1),(1,2),(2,3),(3,4),(4,5),(5,6),(1,6),(6,3),(2,4),(2,5),(7,8),(8,9),(9,7)]
+    color_determination = ColoringNodes(number_of_nodes, edge_list=edge_list,number_of_colors=number_of_colors)
+    color_assignments = color_determination.determineColors()
+    assert color_assignments != None
+    print(f'Color assignment: {color_assignments}')
+    verifyColorAssignments(number_of_nodes, edge_list, number_of_colors, color_assignments)
+    color_determination.visualizNodeColorations()
