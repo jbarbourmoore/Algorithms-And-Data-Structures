@@ -21,6 +21,34 @@ class MaxCutProblem():
         self.edge_list = edge_list
         self.set_list = [True] * self.number_of_nodes
 
+    def findBalancedCut(self): 
+        '''
+        This method utilizes a greedy algorithm to split the list into two such that each node
+        has at least one adjacent node which is in the opposite set
+        '''
+        
+        self.set_list = [True if i < self.number_of_nodes/2 else False for i in range(number_of_nodes)]
+        imbalanced_vertices = self.findUnbalancedNodes()
+        while len(imbalanced_vertices) != 0:
+            self.set_list[imbalanced_vertices[0]] = not self.set_list[imbalanced_vertices[0]]
+            imbalanced_vertices = self.findUnbalancedNodes()
+        
+    def findUnbalancedNodes(self):
+        '''
+        This method returns a list of all nodes which do not have an adjacent node in the other set
+        '''
+
+        unbalanced_nodes = [i for i in range(0,self.number_of_nodes)]
+
+        for edge in self.edge_list:
+            i, j = edge
+            if self.set_list[i] != self.set_list[j]:
+                if i in unbalanced_nodes:
+                    unbalanced_nodes.remove(i)
+                if j in unbalanced_nodes:
+                    unbalanced_nodes.remove(j)
+        return unbalanced_nodes
+
     def drawCutSets(self):
         '''
         This method creates the graphical representation of the cut set
@@ -36,13 +64,12 @@ class MaxCutProblem():
         position_mapping = nx.spring_layout(graph_visualization, seed=1234)
         plt.figure()
         nx.draw(graph_visualization, pos=position_mapping, node_color=color_map, with_labels=True, **options)
-        nx.draw_networkx_edges(graph_visualization, position_mapping, width=2, edgelist = edge_list_cut, edge_color=bright_palette[2])
+        nx.draw_networkx_edges(graph_visualization, position_mapping, width=2, edgelist=edge_list_cut, edge_color=bright_palette[2])
         plt.show()
 
 
-n = 5
-edges = [(0,1),(0,1),(0,3),(0,4), (1,2),(1,3),(2,4),(3,4)]
-max_cut_problem = MaxCutProblem(n,edges)
-max_cut_problem.drawCutSets()
-max_cut_problem.set_list = [False,True,True,False,True]
+number_of_nodes = 5
+edge_list = [(0,1), (0,2), (0,3), (0,4), (1,2), (1,3), (2,4), (3,4)]
+max_cut_problem = MaxCutProblem(number_of_nodes, edge_list)
+max_cut_problem.findBalancedCut()
 max_cut_problem.drawCutSets()
