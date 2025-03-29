@@ -99,6 +99,14 @@ The idea here is to split a list of nodes into two sets such that each node has 
 
 ![This shows 20 nodes that are connected to each other. 9 of the nodes are in set 1, and 11 are in set 2, so each node connects to at least one in the other set.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/c4f5b06be61f22a808243fdf2e5d405389175f60/OutputImages/MaxCutProblem_20Nodes.png "Max Cut Problem With 20 Nodes")
 
+#### Traveling Sales Person
+
+I implemented a version of the traveling sales person problem using Linear Programming with multiple salespeople. The traveling sales person can be constrained by either a maximum number of salespeople or an exact number of salespeople
+
+![This shows the traveling Salesperson with 5 nodes and 2 salespeople. When given the option of 1 or 2 salespeople the algorithm finds that a single salesperson is most efficient.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/9cb2661fefc269dfb15d973686b2cfc32f7102af/OutputImages/TSP_5Node2Salespeople.png "Traveling Sales Person with 5 Nodes")
+
+![This shows the traveling salesperson problem with 8 nodes and 4 salespeople. When given the option of up to four salespeople the algorithm finds that 2 Salespeople is most efficient.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/9cb2661fefc269dfb15d973686b2cfc32f7102af/OutputImages/TSP_8Node4Salespeople.png "Traveling Sales Person with 8 Nodes")
+
 ## Data Structures   
 
 ### Dynamic Array
