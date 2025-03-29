@@ -91,6 +91,14 @@ I used binary variable in linear programming in order to find the best way to co
 
 ![This shows a larger graph of 10 nodes. It uses 4 colors and none of the nodes are connected to a node of the same color.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/708ede1d9ab4231a2e2469c1420da9fe5f81538c/OutputImages/ColoringNode_4Colors10Nodes.png "Coloring 10 Nodes with 4 Colors")
 
+#### Max Cut Problem   
+
+The idea here is to split a list of nodes into two sets such that each node has a connecting edges to a node in the opposite set. In order to do this I used a greedy algorithm to approximate the optimal solution. For this algorithm, the approximate solution should be between 1/2 of the optimal solution and the optimal solution.
+
+![This shows 5 nodes that are connected to each other. 3 of the nodes are in set 1, and 2 are in set 2 so each node connects to at least one in the other set.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/c4f5b06be61f22a808243fdf2e5d405389175f60/OutputImages/MaxCutProblem_5Nodes.png "Max Cut Problem With 5 Nodes")
+
+![This shows 20 nodes that are connected to each other. 9 of the nodes are in set 1, and 11 are in set 2, so each node connects to at least one in the other set.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/c4f5b06be61f22a808243fdf2e5d405389175f60/OutputImages/MaxCutProblem_20Nodes.png "Max Cut Problem With 20 Nodes")
+
 ## Data Structures   
 
 ### Dynamic Array
