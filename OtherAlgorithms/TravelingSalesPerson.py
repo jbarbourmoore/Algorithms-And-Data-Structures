@@ -52,7 +52,7 @@ class TravelingSalesPerson():
         lp_problem += lpSum([binary_variables[j][0] for j in range(0,self.number_of_nodes) if j != 0]) == number_of_salespeople
         for i in range(1,self.number_of_nodes):
             lp_problem += lpSum([binary_j for binary_j in binary_variables[i] if binary_j != None]) == 1
-            lp_problem += lpSum([binary_variables[j][i] for j in range(nodes) if j != i]) == 1
+            lp_problem += lpSum([binary_variables[j][i] for j in range(self.number_of_nodes) if j != i]) == 1
         
         # time based constraints (array starts at node 1 not 0, still indexed at 0)
         for i in range(1,self.number_of_nodes):
@@ -118,7 +118,7 @@ class TravelingSalesPerson():
         lp_problem += lpSum([binary_variables[j][0] for j in range(0,self.number_of_nodes) if j != 0]) >= 1
         for i in range(1,self.number_of_nodes):
             lp_problem += lpSum([binary_j for binary_j in binary_variables[i] if binary_j != None]) == 1
-            lp_problem += lpSum([binary_variables[j][i] for j in range(nodes) if j != i]) == 1
+            lp_problem += lpSum([binary_variables[j][i] for j in range(self.number_of_nodes) if j != i]) == 1
         
         # time based constraints (array starts at node 1 not 0, still indexed at 0)
         for i in range(1,self.number_of_nodes):
@@ -286,3 +286,33 @@ if __name__ == '__main__':
         sum([ 1 if i in tour else 0 for _,tour in max_two_tours.items()]) == 1
 
     two_traveling_salespeople.visualize_MaxAndExactNumberSalespeople(salespeople)
+
+    cost_matrix = [ 
+    [None, 0, 2, 2, 2, 2, 0, 0],
+    [2, None, 1, 2, 1, 2, 1, 1],
+    [2, 4, None, 1, 2, 2, 2, 7],
+    [0, 2, 2, None, 2, 1, 2, 1],
+    [0, 1, 1, 1, None, 1, 1, 1],
+    [0,  1, 2, 1, 1, None, 1, 1],
+    [1, 3,  1, 2, 2, 2,None, 1],
+    [1, 2, 2, 2, 1, 2, 1, None],
+    ]
+    number_of_nodes = 8
+    number_of_salespeople = 4
+
+    four_traveling_salespeople = TravelingSalesPerson(number_of_nodes, cost_matrix)
+    four_tours, four_tour_cost = four_traveling_salespeople.calculateTSP_DefiniteNumberOfSalespeople(number_of_salespeople)
+
+    assert len(four_tours) == number_of_salespeople
+    assert abs(four_tour_cost - 6) <= 0.001
+    for i in range(1, number_of_nodes):
+        sum([ 1 if i in tour else 0 for _,tour in four_tours.items()]) == 1
+
+    max_four_tours, max_four_tour_cost = four_traveling_salespeople.calculateTSP_MaximumNumberOfSalespeople(number_of_salespeople)
+    assert len(max_four_tours) <= number_of_salespeople
+    assert len(max_four_tours) >= 1
+    assert abs(max_four_tour_cost - 5) <= 0.001
+    for i in range(1, number_of_nodes):
+        sum([ 1 if i in tour else 0 for _,tour in max_four_tours.items()]) == 1
+
+    four_traveling_salespeople.visualize_MaxAndExactNumberSalespeople(number_of_salespeople)
