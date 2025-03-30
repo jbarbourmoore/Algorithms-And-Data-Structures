@@ -113,7 +113,15 @@ I implemented a version of the traveling sales person problem using Linear Progr
 
 #### RSA Encryption Scheme 
 
-Utilized the extended form of Euclid's Algorithm in order to create an implementation along the lines of the RSA Encryption Scheme. It takes in two large prime numbers and generates both private and public encyption keys. Messages encrypted with the public key must be decrypted using the private key.
+Utilized the extended form of Euclid's Algorithm in order to create an implementation along the lines of the RSA Encryption Scheme. It takes in two large prime numbers and generates both private and public encyption keys. Messages encrypted with the public key must be decrypted using the private key.    
+
+#### Grover's Quantum Search Algorithm   
+
+Utilized Qiskit in order to implement Grover's Search Algorithm in Python. The implementation takes three qubits for the input, which can form 0-7, or not x_0 and not x_1 and not x_2 through x_0 and x_1 and x_2. Grover's algorithm can be executed a set number of times before reading the result, with the number of iterations affecting the accuracy. It runs extremely quickly and generates a batch of 1000 results which can be displayed as a histogram to show it's accuracy.   
+
+![This shows four circuit diagrams for Grover's search for three, or more precisely, x_0 and x_1 and not x_2. The first diagram is with one iteration, the second shows two iterations, the third shows three iterations and the fouth shows ten iterations.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/main/OutputImages/GroverSearchAlgorithms_SearchFor3_CircuitDiagrams.png "Circuit Diagrams for Grover's Search Algorithm")
+
+![This shows four circuit diagrams for Grover's search for three. The first histogram is with one iteration, and has roughly 80% accuracy, the second shows two iterations with roughly 97% accuracy, the third shows three iterations with roughly 35% accuracy, and the fouth shows ten iterations with roughly 96% accuracy.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/798666cde0566903f7ed1410d5a0032b1cab591e/OutputImages/GroverSearchAlgorithms_SearchFor3_Histograms.png "Histograms for Grover's Search Algorithm")
 
 ## Data Structures   
 
