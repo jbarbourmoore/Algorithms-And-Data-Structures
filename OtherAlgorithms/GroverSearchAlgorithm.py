@@ -119,16 +119,16 @@ def outputSearchResultsFor3BitNumber(number_to_search):
     title = f"Result Frequency For Grover Search Algorithm for f(b_0, b_1, b_2) = {number_to_search}"
     axes[0,0].set_title('1 Iteration Of Grovers Algorithm')
     axes[0,1].set_title('2 Iterations Of Grovers Algorithm')
-    axes[1,0].set_title('3 Iterations Of Grovers Algorithm')
-    axes[1,1].set_title('10 Iterations Of Grovers Algorithm')
+    axes[1,0].set_title('6 Iterations Of Grovers Algorithm')
+    axes[1,1].set_title('13 Iterations Of Grovers Algorithm')
     fig.suptitle(title, fontsize=16) 
     fig.canvas.manager.set_window_title(f'GroverSearchAlgorithms_SearchFor{number_to_search}_Histograms') 
 
     title_circuits = f"Circuit Diagrams For Grover Search Algorithm for f(b_0, b_1, b_2) = {number_to_search}"
-    axes_circuits[0].set_title('1 Iteration Of Grovers Algorithm',x=0.5, y=1.75)
-    axes_circuits[1].set_title('2 Iterations Of Grovers Algorithm',x=0.5, y=2.5)
-    axes_circuits[2].set_title('3 Iterations Of Grovers Algorithm',x=0.5, y=1.53)
-    axes_circuits[3].set_title('10 Iterations Of Grovers Algorithm',x=0.5, y=1)
+    axes_circuits[0].set_title('1 Iteration Of Grovers Algorithm',x=0.5, y=2.1)
+    axes_circuits[1].set_title('2 Iterations Of Grovers Algorithm',x=0.5, y=3)
+    axes_circuits[2].set_title('6 Iterations Of Grovers Algorithm',x=0.5, y=1.35)
+    axes_circuits[3].set_title('13 Iterations Of Grovers Algorithm',x=0.5, y=1)
     fig_circuits.suptitle(title_circuits, fontsize=16) 
     fig_circuits.canvas.manager.set_window_title(f'GroverSearchAlgorithms_SearchFor{number_to_search}_CircuitDiagrams') 
 
@@ -160,7 +160,7 @@ def outputSearchResultsFor3BitNumber(number_to_search):
     classical_bits = ClassicalRegister(3, 'z')
     quantum_circuit = QuantumCircuit(inputs, output, classical_bits)
 
-    createGroverSearchFor3BitNumber(quantum_circuit, inputs, output, classical_bits, number_to_search, 3)
+    createGroverSearchFor3BitNumber(quantum_circuit, inputs, output, classical_bits, number_to_search, 6)
     simulator = Aer.get_backend('aer_simulator')
     circ = transpile(quantum_circuit, simulator)
     result = simulator.run(quantum_circuit).result()
@@ -173,7 +173,7 @@ def outputSearchResultsFor3BitNumber(number_to_search):
     classical_bits = ClassicalRegister(3, 'z')
     quantum_circuit = QuantumCircuit(inputs, output, classical_bits)
 
-    createGroverSearchFor3BitNumber(quantum_circuit, inputs, output, classical_bits, number_to_search, 10)
+    createGroverSearchFor3BitNumber(quantum_circuit, inputs, output, classical_bits, number_to_search,13)
     simulator = Aer.get_backend('aer_simulator')
     circ = transpile(quantum_circuit, simulator)
     result = simulator.run(quantum_circuit).result()
