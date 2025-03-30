@@ -9,6 +9,10 @@ My code repository for following along with Foundations of Algorithms and Data S
 | Professor | Sriram Sankaranarayanan  |   
 | Textbook | Introduction To Algorithms by Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford Stein  |   
 
+### Specialization Certificate
+
+![The pdf certificate for the Foundations of Algorithms and Data Structures Specialization for University of Colorado Boulder on Coursera. It was a five course series consisting of "Algorithms for Searching, Sorting and Indexing", "Graphs and Trees: Basics", "Dynamic Programming, Greedy Algorithms", "Approximation Algorithms, and Linear Programming" and "Advanced Data Structures, RSA and Quantum Algorithms"](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/0ce320cf8e3a047ec7c134c89b62f4a1d45ce905/OutputImages/CourseraCertificationPDFs/Specialization_DataStructuresAndAlgorithmsCert_ImageForReadMe.png "Coursera Certificate for Foundations of Algorithms and Data Structures Specializtion")
+
 ## Algorithms
 
 ### Sorting
@@ -106,6 +110,10 @@ I implemented a version of the traveling sales person problem using Linear Progr
 ![This shows the traveling Salesperson with 5 nodes and 2 salespeople. When given the option of 1 or 2 salespeople the algorithm finds that a single salesperson is most efficient.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/9cb2661fefc269dfb15d973686b2cfc32f7102af/OutputImages/TSP_5Node2Salespeople.png "Traveling Sales Person with 5 Nodes")
 
 ![This shows the traveling salesperson problem with 8 nodes and 4 salespeople. When given the option of up to four salespeople the algorithm finds that 2 Salespeople is most efficient.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/9cb2661fefc269dfb15d973686b2cfc32f7102af/OutputImages/TSP_8Node4Salespeople.png "Traveling Sales Person with 8 Nodes")
+
+#### RSA Encryption Scheme 
+
+Utilized the extended form of Euclid's Algorithm in order to create an implementation along the lines of the RSA Encryption Scheme. It takes in two large prime numbers and generates both private and public encyption keys. Messages encrypted with the public key must be decrypted using the private key.
 
 ## Data Structures   
 
