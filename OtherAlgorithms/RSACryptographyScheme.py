@@ -17,7 +17,7 @@ class RSACryptographyScheme():
     decrypt => (M, (d, n)) = M**d % n
     '''
 
-    def __init__(self, smaller_large_prime, larger_prime, number_system_base = 214):
+    def __init__(self, smaller_large_prime, larger_prime, number_system_base = 214, block_size = 5):
         '''
         This method initializes the RSACryptographyScheme
 
@@ -28,11 +28,14 @@ class RSACryptographyScheme():
                 The larger of the two large primes to generate the rsa keys
             number_system_base : int, optional
                 The number system base to use when converting the message to a list of numbers (default is 214)
+            block_size : int, optional
+                The number of characters in each block when encoded (default is five)
         '''
 
         self.smaller_large_prime = smaller_large_prime
         self.larger_prime = larger_prime
         self.number_system_base = number_system_base
+        self.block_size = block_size
 
         self.generateRSAKeys()
 
@@ -131,19 +134,19 @@ class RSACryptographyScheme():
             return None, "Alphanumeric and space characters only please"
        
         # Ensure the list is a multiple of 5 characters long by using an ascii null character (chr(31))
-        r = 0 if number_of_characters % 5 == 0 else 5 - ( number_of_characters % 5 )
+        r = 0 if number_of_characters % self.block_size == 0 else self.block_size - ( number_of_characters % 5 )
         string_list += [chr(31)] * r
 
         number_of_characters = len(string_list) 
         list_message_number = []
 
         # transform every block of 5 characters into a q-base number as a decimal
-        for i in range(0, number_of_characters, 5):
-            five_char_block = string_list[i:i+5]
+        for i in range(0, number_of_characters, self.block_size):
+            five_char_block = string_list[i:i+self.block_size]
             list_char_base_q = [ ord(char) - 31 for char in five_char_block]
             block_as_decimal_number = 0
 
-            for i in range(4, -1, -1):
+            for i in range(self.block_size-1, -1, -1):
                 block_as_decimal_number = block_as_decimal_number * self.number_system_base + list_char_base_q[i]
 
             list_message_number.append(block_as_decimal_number)
@@ -169,7 +172,7 @@ class RSACryptographyScheme():
         
         codes = []
         for message_block_number in list_message_number:
-            for _ in range(0, 5):
+            for _ in range(0, self.block_size):
 
                 r = message_block_number % self.number_system_base
                 if r >= 1:
@@ -180,7 +183,21 @@ class RSACryptographyScheme():
     
 
     def extendedEuclidAlgorithm(self, larger_number, smaller_number):
+        '''
+        This method implements the extended form or euclids algorithm
 
+        Parameters :
+            larger_number : int
+                The larger number to be used
+            smaller_number : int
+                The smaller number to be used
+
+        Returns : 
+            larger_number : int
+                The final value of the larger number at the algorithm's completion
+            t : int
+                The number for t
+        '''
         s = 1
         t = 0
         s_hat = 0
@@ -206,6 +223,16 @@ class RSACryptographyScheme():
         return larger_number, t        
 
     def modular_exp(self, message_number_block, is_encoding = True):
+        '''
+        This function uses the rsa keys with a modular expression to encrypt and decrypt a message block
+
+        Parameters : 
+            message_number_block : int
+                A block of the message to be encrypted or decrypted
+            is_encoding : Boolean, optional
+                Whether the message is being encrypted of decrypted (Default is True, of Encrypting)
+        '''
+
         if is_encoding:
             key_number = self.e
         else:
@@ -220,53 +247,54 @@ class RSACryptographyScheme():
             exp = (exp * exp) % self.n
             key_number = key_number // 2
         return result
+if __name__ == '__main__':
 
-smaller_initial_prime = 1096341613
-larger_initial_prime = 4587343829
-rsa_crypto_scheme = RSACryptographyScheme(smaller_initial_prime, larger_initial_prime)
+    smaller_initial_prime = 1096341613
+    larger_initial_prime = 4587343829
+    rsa_crypto_scheme = RSACryptographyScheme(smaller_initial_prime, larger_initial_prime, block_size=5)
 
-print(f"Initial RSA Key Pair Generated With {smaller_initial_prime} and {larger_initial_prime} :")
-print(f'Public Key: {rsa_crypto_scheme.e, rsa_crypto_scheme.n}')
-print(f'Private Key: {rsa_crypto_scheme.d, rsa_crypto_scheme.n}')
+    print(f"Initial RSA Key Pair Generated With {smaller_initial_prime} and {larger_initial_prime} :")
+    print(f'Public Key: {rsa_crypto_scheme.e, rsa_crypto_scheme.n}')
+    print(f'Private Key: {rsa_crypto_scheme.d, rsa_crypto_scheme.n}')
 
-print("- - - - - - - - - - - -")
+    print("- - - - - - - - - - - -")
 
-original_message = 'This is a secret message'
-print(f'Original message : {original_message}')
+    original_message = 'This is a secret message'
+    print(f'Original message : {original_message}')
 
-rsa_encrypted_message = rsa_crypto_scheme.rsaEncoding(original_message)
-print(f"Encrypted message with public key : {rsa_encrypted_message}")
+    rsa_encrypted_message = rsa_crypto_scheme.rsaEncoding(original_message)
+    print(f"Encrypted message with public key : {rsa_encrypted_message}")
 
-decoded_message = rsa_crypto_scheme.rsaDecoding(rsa_encrypted_message)
-print(f"Decrypted message with correct private key : {decoded_message}")
-assert original_message == decoded_message
+    decoded_message = rsa_crypto_scheme.rsaDecoding(rsa_encrypted_message)
+    print(f"Decrypted message with correct private key : {decoded_message}")
+    assert original_message == decoded_message
 
-print("- - - - - - - - - - - -")
+    print("- - - - - - - - - - - -")
 
-smaller_second_prime = 2415707843
-larger_second_prime = 8300694107
-second_rsa_crypto_scheme = RSACryptographyScheme(smaller_second_prime, larger_second_prime)
-print(f"Second RSA Key Pair Generated With {smaller_second_prime} and {larger_second_prime} :")
-print(f'Public Key: {second_rsa_crypto_scheme.e, second_rsa_crypto_scheme.n}')
-print(f'Private Key: {second_rsa_crypto_scheme.d, second_rsa_crypto_scheme.n}')
+    smaller_second_prime = 2415707843
+    larger_second_prime = 8300694107
+    second_rsa_crypto_scheme = RSACryptographyScheme(smaller_second_prime, larger_second_prime)
+    print(f"Second RSA Key Pair Generated With {smaller_second_prime} and {larger_second_prime} :")
+    print(f'Public Key: {second_rsa_crypto_scheme.e, second_rsa_crypto_scheme.n}')
+    print(f'Private Key: {second_rsa_crypto_scheme.d, second_rsa_crypto_scheme.n}')
 
-print("- - - - - - - - - - - -")
+    print("- - - - - - - - - - - -")
 
-decoded_message_wrong_key = second_rsa_crypto_scheme.rsaDecoding(rsa_encrypted_message)
-print(f"Decrypted message with wrong private key : {decoded_message_wrong_key}")
-assert original_message != decoded_message_wrong_key
-print("- - - - - - - - - - - -")
+    decoded_message_wrong_key = second_rsa_crypto_scheme.rsaDecoding(rsa_encrypted_message)
+    print(f"Decrypted message with wrong private key : {decoded_message_wrong_key}")
+    assert original_message != decoded_message_wrong_key
+    print("- - - - - - - - - - - -")
 
-second_message = 'And using the other key pairs around!'
-print(f'Second message : {second_message}')
-rsa_encrypted_second_message = second_rsa_crypto_scheme.rsaEncoding(second_message)
-print(f"Encrypted message with public key : {rsa_encrypted_second_message}")
+    second_message = 'And using the other key pairs around!'
+    print(f'Second message : {second_message}')
+    rsa_encrypted_second_message = second_rsa_crypto_scheme.rsaEncoding(second_message)
+    print(f"Encrypted message with public key : {rsa_encrypted_second_message}")
 
-decoded_second_message = second_rsa_crypto_scheme.rsaDecoding(rsa_encrypted_second_message)
-print(f"Decrypted message with correct private key : {decoded_second_message}")
-assert second_message == decoded_second_message
-print("- - - - - - - - - - - -")
+    decoded_second_message = second_rsa_crypto_scheme.rsaDecoding(rsa_encrypted_second_message)
+    print(f"Decrypted message with correct private key : {decoded_second_message}")
+    assert second_message == decoded_second_message
+    print("- - - - - - - - - - - -")
 
-decoded_second_message_wrong_key = rsa_crypto_scheme.rsaDecoding(rsa_encrypted_second_message)
-print(f"Decrypted message with wrong private key : {decoded_second_message_wrong_key}")
-assert second_message != decoded_second_message_wrong_key
+    decoded_second_message_wrong_key = rsa_crypto_scheme.rsaDecoding(rsa_encrypted_second_message)
+    print(f"Decrypted message with wrong private key : {decoded_second_message_wrong_key}")
+    assert second_message != decoded_second_message_wrong_key
