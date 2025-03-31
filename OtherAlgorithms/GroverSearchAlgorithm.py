@@ -62,6 +62,8 @@ def searchFor3BitNumber(quantum_circuit, inputs, output, number_to_search):
     if number_to_search in [0, 1, 2, 3]:
         quantum_circuit.x(inputs[2])    
 
+
+
 def createGroverSearchFor3BitNumber(quantum_circuit, inputs, result, classical_bits, number_to_search = 0, number_of_iterations = 1):
     '''
     This function performs a grover's search for a 3 bit number over a certain number of iterations
