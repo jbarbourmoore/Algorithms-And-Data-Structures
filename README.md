@@ -131,6 +131,10 @@ Utilized Qiskit in order to implement Shor's Algorithm to find the prime factors
 
 ![This shows the console output of the use of shor's algorithm to attack basic rsa encryption. The original rsa encryption had a public key of (5, 91). The bad actor used Shor's algorithm to find the factors of 91 are 7 and 13. The bad actor was then able to use that information to determine the private key was (29, 91) and decode the message.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/6f61a19bfd53cbe5f2db45c03b951ddc2985d6ce/OutputImages/ShorsAlgorithmVsRSA_ConsoleOutput.jpg "Shor's Algorithm vs. RSA Encryption")
 
+This shows a small example diagram of one of the circuits created using custom unitary gates and inverse fourier transform in order to calculate the order of f(x) = ax%n = 1.
+
+![The diagram of the circuit for finding f(x) = ax%n = 1 where a is 3 and n is 7. There are 6 inputs which go through 6 custom modulo gates and one inverse fourier transform gate.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/aae14a4a741cd0986e622a427f5a0034aebe92a7/OutputImages/ShorsAlgorithmVsRSA_CircuitToFindOrder.jpg "Order Finding Circuit Diagram")
+
 ## Data Structures   
 
 ### Dynamic Array
