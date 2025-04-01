@@ -1,9 +1,12 @@
 # Foundations of Algorithms and Data Structures
-My code repository for following along with Foundations of Algorithms and Data Structures  
 
-## Course Information
+This code repository contains the python based programs I have created while following along with the Foundations of Algorithms and Data Structures Specialization on Coursera. This README should contain the list of the programs I have created, as well as images of some of the relevant outputs that the programs have generated.
+
+## Specialization Information
 |          |            |
 | -------- | ----------- |   
+| Name | Foundations of Algorithms and Data Structures |
+| Courses | "Algorithms for Searching, Sorting and Indexing", "Graphs and Trees: Basics", "Dynamic Programming, Greedy Algorithms", "Approximation Algorithms, and Linear Programming" and "Advanced Data Structures, RSA and Quantum Algorithms" |
 | School | University of Colorado Boulder  |   
 | Location | Coursera  |   
 | Professor | Sriram Sankaranarayanan  |   
