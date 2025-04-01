@@ -127,7 +127,7 @@ Utilized Qiskit in order to implement Grover's Search Algorithm in Python. The i
 
 #### Breaking RSA Encryption With Shor's Algorithm For Prime Factors in Quantum Computing   
 
-Utilized Qiskit in order to implement Shor's Algorithm to find the prime factors of the public key n from rsa encryption. This then allows the creation of the matching private key, so a bad actor may be able to read encrypted information not intended for them. As it is running in a simulator it is very limited in the size of input (7 qubits) so it cannot factor any number larger that 127. It also is not fast in the simulator and would be beaten by most classical factorization algorithms, but both of these factors may be set to change as the quantum landscape continues to evolve and larger quantum computers become more available.
+Utilized Qiskit in order to implement Shor's Algorithm to find the prime factors of the public key n from rsa encryption. This then allows the creation of the matching private key, so a bad actor may be able to read encrypted information not intended for them. As it is running in a simulator it is very limited in the size of input (7 qubits) so it cannot factor any number larger than 127. It also is not fast in the simulator and would be beaten by most classical factorization algorithms. Both of these factors likely do not hold true if it is ran on an actual quantum computer, or at least the speed will likely beat classical factorization algorithms as the size of the number being factored increases. Shor's Algorithm should allow factorization of large numbers at O(n**3).
 
 ![This shows the console output of the use of shor's algorithm to attack basic rsa encryption. The original rsa encryption had a public key of (5, 91). The bad actor used Shor's algorithm to find the factors of 91 are 7 and 13. The bad actor was then able to use that information to determine the private key was (29, 91) and decode the message.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/6f61a19bfd53cbe5f2db45c03b951ddc2985d6ce/OutputImages/ShorsAlgorithmVsRSA_ConsoleOutput.jpg "Shor's Algorithm vs. RSA Encryption")
 
@@ -238,4 +238,15 @@ Below are some graphics showing the shortest distances and shortest paths betwee
 
 ![Tables comparing the shortest paths between each node in the graph when it is weighted or unweighted and directed or undirected. Weighted causes some of the paths to reroute to avoid particularly heavy or expensive routes. Directed  decreases the number of nodes are accessible from which other nodes, thereby changing the routing options.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/48fe4e511fcf3d83faa1bc48ddd7ff56d7dbc8ce/OutputImages/Graph_ShortestPathsComparisons.png "Shortest Paths Comparisons")
 
+### BTree   
 
+I implemented a form of a BTree in python. For a BTree:    
+- Each node can have multiple keys
+- Each node (other than the root node) must a minimum number of keys
+- Each node cannot have more than a maximum number of keys
+- All leaf nodes are the same level
+- The operations such as searching, inserting and deleting should have a time complexity of O(log(n))   
+
+Below is an example of visualisations I generated showing some basic operations with a tree that has a minimumkey count of 2 (maximum is 4):   
+
+![This shows an example of keys being inserted and deleted into a BTree. The BTree begins with two levels and then grows to three levels when several keys are inserted. When the key in the root node is removed it is replaced by the key from a different node. The tree then shrinks back to two levels when another node is removed.](https://github.com/jbarbourmoore/Algorithms-And-Data-Structures/blob/3354033284d50f6c2926ce97cbeb947438713fc0/OutputImages/BTree_Visualization_InsertionAndDeletion.png "BTree Insertion and Deletion Visualisation")
