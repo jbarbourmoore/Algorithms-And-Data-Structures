@@ -122,7 +122,7 @@ class BTreeNode(object):
                 The BTreeNode of the successor and it's first key value
         '''
 
-        if self.is_leaf_node() or key_index >= len(self.keys) - 1:
+        if self.is_leaf_node() or key_index >= len(self.keys):
             return None
         
         child = self.children[key_index + 1]
@@ -290,6 +290,179 @@ class BTreeNode(object):
         if self.debug:
             print(f"splitting node {self.keys} returning self {self} as first_new_node and {new_node} as second_new_node")
         return (middle_key, self, new_node)
+    
+    def deleteKey(self, key_to_delete):
+        '''
+        This method deletes a key from the BTree with this BTreeNode as its root
+
+        Parameters :
+            key_to_delete : int
+                The key to be deleted from the BTree
+
+        Returns :
+            root_node : BTreeNode
+                The root node after the deletion, which may or may not change from this node
+        '''
+
+        result_of_deletion = self.deleteKey_Internal(key_to_delete)
+        if result_of_deletion == None:
+            return self
+        else:
+            return result_of_deletion
+        
+    def deleteKey_Internal(self, key_to_delete):
+        '''
+        This method deletes a specific key from the BTree
+
+        Parameters :
+            key_to_delete : int
+                The key to be deleted from the BTree
+
+        Returns :
+            deletion_result : None / BTreeNode
+                The result of the deletion including whether the node needs to be replaced with another
+        '''
+
+        search_result = self.searchForKey_Internal(key_to_delete)
+        if search_result == None:
+            print(f'Could not find {key_to_delete} in the BTree')
+            return None
+
+        node_with_key_to_delete, key_index = search_result
+
+        if not node_with_key_to_delete.is_leaf_node():
+            successor = node_with_key_to_delete.findSuccessorNodeToKey(key_index)
+            successor_key, successor_leaf_node = successor
+            if self.debug:
+                print(f'{key_to_delete} replaced by {successor_key}')
+            
+            node_with_key_to_delete.keys[key_index] = successor_key
+
+            return successor_leaf_node.deleteKey_FromLeafNode(0)
+        else:
+            return node_with_key_to_delete.deleteKey_FromLeafNode(key_index)
+            
+    def deleteKey_FromLeafNode(self, key_index):
+        '''
+        This method deletes a key from a leaf node.
+
+        Parameters :
+            key_index : int 
+                The index of the key to be deleted
+        '''
+
+        self.keys.remove(self.keys[key_index])
+
+        if self.is_root_node or len(self.keys) >= self.minimum_key_count:
+            return None
+        else:
+            if self.debug:
+                print(f"{self.keys} no longer meets the minimum of {self.minimum_key_count} keys")
+            return self.repairNodeUnderMinimumKeys()
+    
+    def repairNodeUnderMinimumKeys(self):
+        '''
+        This method repairs a node that is under the minimum number of keys following a deletion
+        '''
+
+        parent_node, index_of_self_as_child = self.parent_information
+        parents_number_of_keys = len(parent_node.keys)
+        if index_of_self_as_child <= parents_number_of_keys-1 : 
+            right_sibling = parent_node.children[index_of_self_as_child + 1]
+            number_of_keys_right_sibling = len(right_sibling.keys)
+            if number_of_keys_right_sibling > self.minimum_key_count: 
+                if self.debug:
+                    print(f"Taking key from right sibling {right_sibling}")
+                self.takeKey_RightSibling(right_sibling)
+
+            else:
+                if self.debug:
+                    print(f"Merging with right sibling {right_sibling}")
+                self.mergeWithSibling(right_sibling)
+                if parent_node.is_root_node and len(parent_node.keys) == 0:
+
+                    if self.debug:
+                        print(f"Root no longer has keys. {self} is now root node.")
+                    self.parent = None
+                    self.is_root_node = True
+                    self.correctParentInformationForChildren()
+                    return self
+        else:
+            left_sibling = parent_node.children[index_of_self_as_child-1]
+            number_of_keys_left_sibling = len(left_sibling.keys)
+            if number_of_keys_left_sibling > self.minimum_key_count: 
+                if self.debug:
+                    print(f"Taking key from left sibling {left_sibling}")
+                self.takeKey_LeftSibling(left_sibling)
+            else:
+                if self.debug:
+                    print(f"Merging with left sibling {left_sibling}")
+                left_sibling.mergeWithSibling(self)
+                if parent_node.is_root_node and len(parent_node.keys) == 0:
+                    if self.debug:
+                        print(f"Root no longer has keys. {self} is now root node.")
+                    left_sibling.parent = None
+                    left_sibling.is_root_node = True
+                    left_sibling.correctParentInformationForChildren()
+                    return left_sibling
+                
+        if not parent_node.is_root_node and len(parent_node.keys) < self.minimum_key_count: 
+            return parent_node.repairNodeUnderMinimumKeys()
+    
+    def takeKey_RightSibling(self, right_sibling):
+        '''
+        This method takes a key from the right sibling
+
+        Parameters:
+            right_sibling : BTreeNode
+                The right sibling of the current node
+        '''
+
+        parent_node, index_of_self_as_child = self.parent_information
+        self.keys.append(parent_node.keys[index_of_self_as_child])
+        parent_node.keys[index_of_self_as_child] = right_sibling.keys[0]
+        right_sibling.keys.pop(0)
+        if not self.is_leaf_node():
+            new_child_node = right_sibling.children[0]
+            self.children.append(new_child_node)
+            right_sibling.children.pop(0)
+            self.correctParentInformationForChildren()
+            right_sibling.correctParentInformationForChildren()
+    
+    def takeKey_LeftSibling(self, left_sibling_node):
+        '''
+        This method takes a key from the right sibling
+
+        Parameters:
+            right_sibling : BTreeNode
+                The right sibling of the current node
+        '''
+        
+        parent_node, index_of_self_as_child = self.parent_information
+        left_sibling_number_of_keys = len(left_sibling_node.keys)
+        self.keys.insert(0, parent_node.keys[index_of_self_as_child-1])
+        parent_node.keys[index_of_self_as_child-1] = left_sibling_node.keys[left_sibling_number_of_keys-1]
+        left_sibling_node.keys.pop()
+        if not self.is_leaf_node():
+            self.children.insert(0, left_sibling_node.children[left_sibling_number_of_keys])
+            left_sibling_node.children.pop()
+            self.correctParentInformationForChildren()
+            left_sibling_node.correctParentInformationForChildren()    
+
+    def mergeWithSibling(self, right_sibling_node):
+        '''
+        This method merges this node with a sibling node, creating a single node
+        '''
+
+        parent_node, index_of_self_as_child = self.parent_information
+        self.keys = self.keys + [parent_node.keys[index_of_self_as_child]] + right_sibling_node.keys
+        if not self.is_leaf_node():
+            self.children = self.children + right_sibling_node.children
+        parent_node.keys.pop(index_of_self_as_child)
+        parent_node.children.pop(index_of_self_as_child + 1)
+        parent_node.correctParentInformationForChildren()
+        if not self.is_leaf_node():
+            self.correctParentInformationForChildren()  
 
     def __str__(self):
         '''
@@ -352,7 +525,7 @@ class BTreeNode(object):
         plt.axis("off")
         plt.show()
 
-if __name__ == '__main__':
+if __name__ == '__main__':  
     key_list = [1, 5, 2, 4, 3, 9, 15, -5, 12, 18, 80, -25, 22, 31, -15]
     btree_root_node = BTreeNode(minimum_key_count=2, is_root_node=True, debug=True)
     for key in key_list:
@@ -360,7 +533,22 @@ if __name__ == '__main__':
     btree_root_node.generateBTreeVisualisation()
     btree_root_node = btree_root_node.addNewKey(-2)
     btree_root_node = btree_root_node.addNewKey(71)
-    btree_root_node.generateBTreeVisualisation()
     btree_root_node = btree_root_node.addNewKey(29)
     btree_root_node = btree_root_node.addNewKey(16)
+    btree_root_node.generateBTreeVisualisation()
+    btree_root_node = btree_root_node.deleteKey(9)
+    btree_root_node.generateBTreeVisualisation()
+    btree_root_node = btree_root_node.deleteKey(22)
+    btree_root_node.generateBTreeVisualisation()
+
+    from random import shuffle
+    list_of_numbers = list(range(-300,300))
+    shuffle(list_of_numbers)
+    btree_root_node = BTreeNode(minimum_key_count=5,is_root_node=True, debug=False)
+    for j in list_of_numbers:
+        btree_root_node = btree_root_node.addNewKey(j)
+    btree_root_node.generateBTreeVisualisation()
+    for i in range(-200, 100):
+        if btree_root_node.searchForKey(i):
+            btree_root_node = btree_root_node.deleteKey(i)
     btree_root_node.generateBTreeVisualisation()
